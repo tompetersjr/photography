@@ -1,0 +1,57 @@
+{% extends "base.jinja2" %}
+
+{% block content %}
+    <!-- Login -->
+    <div class="row justify-content-center p-2">
+        <div class="col-sm-8 col-lg-5">
+            <header class="text-center mb-4">
+                <h1>Login</h1>
+            </header>
+
+            {{ message }}
+
+            <!-- Form -->
+            <form id="login-form" method="post" action="{{ url }}">
+                <div class="mb-4">
+                    <label for="login">Username:</label>
+                    <input class="form-control" id="login" name="login" type="text"
+                           placeholder="johndoe" value="{{ login }}">
+                </div>
+
+                <div class="row justify-content-between">
+                    <div class="col align-self-center">
+                        <label for="password">Password:</label>
+                    </div>
+                    <div class="col align-self-center text-right">
+                        <a class="mb-2" href="#!">Forgot password?</a>
+                    </div>
+                </div>
+                <input class="form-control mb-3" id="password" name="password"
+                       type="password" placeholder="Password">
+                <div class="row justify-content-between">
+                    <div class="col-8 align-self-center">
+                        <label class="form-check-inline mb-0">
+                            <input name="remember_me" type="checkbox">
+                            &nbsp;Keep signed in
+                        </label>
+                    </div>
+                    <div class="col-4 align-self-center text-right">
+                        <button class="btn btn-md btn-primary" type="submit"
+                                name="form.submitted">
+                            Login
+                        </button>
+                    </div>
+                </div>
+                <input type="hidden" name="came_from" value="{{ next_url }}"/>
+            </form>
+            <!-- End Form -->
+
+            <footer class="text-center">
+                <p class="mb-0">Don't have an account?
+                    <a href="#">Register</a>
+                </p>
+            </footer>
+        </div>
+    </div>
+    <!-- End Login -->
+{% endblock content %}

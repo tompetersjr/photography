@@ -1,0 +1,4 @@
+# We don't want the repository included in the docker build context,
+# the dockerfile lives here for convenience, but build with:
+# docker build -t photography/backend - < path-to-dockerfile
+*

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="{{request.locale_name}}">
+<head>
+    <!-- Title -->
+    <title>Photography</title>
+
+    <!-- Required Meta Tags Always Come First -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{request.static_url('www:static/img/favicon.png')}}">
+
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"
+          integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{request.static_url('www:static/css/theme.css')}}">
+</head>
+
+<body>
+<div class="container-fluid">
+    <!-- Header -->
+    <ul class="nav justify-content-end">
+        <li class="nav-item">
+            <a class="nav-link active" href="{{ request.route_url('faq') }}">FAQ</a>
+        </li>
+        {% if request.user is none %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ request.route_url('login') }}">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Register</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ request.route_url('logout') }}">Logout {{request.user.first_name}} {{request.user.last_name}}</a>
+        </li>
+        {% endif %}
+    </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ request.route_url('home') }}">{{ request.site.name }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                {% for nav in request.main_menu %}
+                <li class="nav-item {% if nav.route == page %}active{% endif %}">
+                    <a class="nav-link" href="{{ request.route_url(nav.route, **nav.params) }}">
+                        {{ nav.page_title }} <span class="sr-only">{% if nav.route == page %}(current){% endif %}</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+    <!-- End Header -->
+</div>
+<a href="#" class="back-to-top">
+    <i class="fas fa-arrow-circle-up fa-3x"></i>
+</a>
+
+<div class="container-fluid">
+{% block content %}
+    <p>No content</p>
+{% endblock content %}
+</div>
+
+<!-- JS Global Compulsory -->
+<script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
+        integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+        crossorigin="anonymous"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.0.4/js/all.js"></script>
+<script src="{{request.static_url('www:static/js/site.js')}}"></script>
+
+{% block javascript %}
+{% endblock javascript %}
+
+</body>
+</html>

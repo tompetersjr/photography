@@ -1,0 +1,118 @@
+{% extends "base.jinja2" %}
+
+{% block content %}
+    <div class="greybar">
+        <div class="row">
+            <div class="col-8">
+            <div class="mt-1">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        {% for item in breadcrumbs %}
+                            <li class="breadcrumb-item {% if loop.last %}active{% endif %}"
+                                {% if loop.last %}aria-current="page"{% endif %}>
+                                {% if not loop.last %}
+                                    <a href="{{ request.route_url('album', album=item.slug) }}">{% endif %}
+                                {{ item.title }}
+                                {% if not loop.last %}</a>{% endif %}
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </nav>
+            </div>
+            </div>
+            <div class="col-4">
+                <div class="float-right mt-2">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newAlbumModel">
+                        Create Album</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadAlbumModel">
+                        Upload Photos</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% for album in albums %}
+        <p>
+            <a class="nav-link" href="{{ request.route_url('album', album=album.slug) }}">{{ album.title }}</a>
+        </p>
+    {% endfor %}
+    {% for photo_row in photos | batch(5, None) %}
+        <div class="card-deck">
+            {% for photo in photo_row %}
+                <div class="card">
+                    <img class="card-img-top" src="{{ request.route_url('image', size='small', title=photo.slug) }}"
+                         alt="{{ photo.title }}">
+                    <div class="card-body">
+                        <p class="card-title"><i class="fas fa-camera-retro"></i> {{ photo.title }}</p>
+                        <p class="card-text">{{ photo.description|default("", True) }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Uploaded on {{ photo.created_on|datetime }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <p></p>
+    {% endfor %}
+
+    <div class="modal fade" id="newAlbumModel" tabindex="-1" role="dialog" aria-labelledby="newAlbumModelLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="create-album-form" method="post" action="{{ url }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create Album</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-4">
+                            <label for="title">Album Name:</label>
+                            <input class="form-control" id="title" name="title" type="text"
+                                   placeholder="My Album" value=""/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" name="form.new.album.submitted">Save Album
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="uploadAlbumModel" tabindex="-1" role="dialog" aria-labelledby="uploadAlbumModelLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="upload-photos-form" method="post" action="{{ url }}"
+                      accept-charset="utf-8" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Upload Photos</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-4">
+                            <label for="fileselect">Album Name:</label>
+                            <input type="file" id="fileselect" name="fileselect" multiple="multiple"/>
+                        </div>
+                    </div>
+                    <div class="modal-footer" id="submitbutton">
+                        <button type="submit" class="btn btn-primary" name="form..upload.photos.submitted">Upload
+                            Photos
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascript %}
+    <script>
+    </script>
+{% endblock javascript %}

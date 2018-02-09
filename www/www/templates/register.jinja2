@@ -1,0 +1,67 @@
+{% extends "base.jinja2" %}
+
+{% block content %}
+    <!-- Register -->
+    <div class="row justify-content-center p-2">
+        <div class="col-sm-10 col-md-9 col-lg-6">
+            <header class="text-center mb-4">
+                <h1>Signup</h1>
+            </header>
+
+            <!-- Form -->
+            <form>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 mb-4">
+                        <label>First name:</label>
+                        <input class="form-control" type="email" placeholder="John">
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6 mb-4">
+                        <label>Last name:</label>
+                        <input class="form-control" type="tel" placeholder="Doe">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label>Email:</label>
+                    <input class="form-control" type="email" placeholder="johndoe@tompetersphotography.com">
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 mb-4">
+                        <label>Password:</label>
+                        <input class="form-control" type="password" placeholder="********">
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6 mb-4">
+                        <label>Confirm
+                            Password:</label>
+                        <input class="form-control" type="password" placeholder="Password">
+                    </div>
+                </div>
+
+                <div class="row justify-content-between mb-5">
+                    <div class="col-8 align-self-center">
+                        <label class="form-check-inline">
+                            <input type="checkbox">
+                            &nbsp;I accept the&nbsp;<a href="#!">Terms and Conditions</a>
+                        </label>
+                    </div>
+                    <div class="col-4 align-self-center text-right">
+                        <button class="btn btn-md btn-primary" type="button">Signup
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <!-- End Form -->
+
+            <footer class="text-center">
+                <p mb-0">
+                Already have an account?
+                <a href="{% url 'login' %}">Login</a>
+                </p>
+            </footer>
+        </div>
+    </div>
+    <!-- End Register -->
+{% endblock content %}

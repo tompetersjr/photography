@@ -1,0 +1,123 @@
+version: '3'
+
+services:
+  www:
+    build: ./www
+    network_mode: bridge
+    command: serve.sh
+    #command: sleep infinity  # Useful for debugging
+    links:
+      - rabbitmq
+      - redis
+      - postgres
+      - mailhog
+      - memcached
+    volumes:
+      - ./www:/srv/photos
+      - ./uploads:/srv/uploads
+    ports:
+      - 80:6543
+    environment:
+      - "WAIT_HOSTS=postgres:5432"
+      - "DEPLOY_ENV=development.ini"
+
+  celeryworker:
+    build: ./www
+    network_mode: bridge
+    command: celeryworker.sh
+    #command: sleep infinity  # Useful for debugging
+    links:
+      - rabbitmq
+      - redis
+      - postgres
+      - mailhog
+      - memcached
+    volumes:
+      - ./www:/srv/photos
+      - ./uploads:/srv/uploads
+    environment:
+      - "WAIT_HOSTS=postgres:5432"
+      - "DEPLOY_ENV=development.ini"
+
+  celerybeat:
+    build: ./www
+    network_mode: bridge
+    command: celerybeat.sh
+    links:
+      - rabbitmq
+      - redis
+      - postgres
+      - mailhog
+      - memcached
+    volumes:
+      - ./www:/srv/photos
+      - ./uploads:/srv/uploads
+    environment:
+      - "WAIT_HOSTS=postgres:5432"
+      - "DEPLOY_ENV=development.ini"
+
+  flower:
+    build: ./flower
+    network_mode: bridge
+    command: flower --port=5555 --broker_api=http://rabbituser:frTyu7hfdcgrQ1@rabbitmq:15672/api/
+    ports:
+      - 5555:5555
+    links:
+      - rabbitmq
+      - redis
+    environment:
+      - "CELERY_BROKER_URL=amqp://rabbituser:password@rabbitmq//"
+
+  redis:
+    image: redis:3.2.11
+    network_mode: bridge
+
+  rabbitmq:
+    image: rabbitmq:3.7.2-management
+    network_mode: bridge
+    ports:
+      - 15672:15672
+    environment:
+      - "RABBITMQ_ERLANG_COOKIE=secretcookie"
+      - "RABBITMQ_DEFAULT_USER=rabbituser"
+      - "RABBITMQ_DEFAULT_PASS=password"
+
+  postgres:
+    build:
+      context: ./postgres
+    network_mode: bridge
+    ports:
+      - 5432:5432 # Keep from conflicting with a local postgres server.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - "POSTGRES_PASSWORD=password"
+
+  pgadmin:
+    image: fenglc/pgadmin4:2.1
+    network_mode: bridge
+    links:
+      - postgres
+      - mailhog
+    ports:
+      - 5050:5050
+    environment:
+      - "DEFAULT_USER=admin"
+      - "DEFAULT_PASSWORD=password"
+      - "MAIL_SERVER=mailhog"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.0
+    network_mode: bridge
+    ports:
+      - 8025:8025
+
+  memcached:
+    image: memcached:1.5
+    network_mode: bridge
+
+volumes:
+  postgres_data: {}
+  pgadmin_data: {}
