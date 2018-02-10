@@ -66,3 +66,13 @@ Using Alembic for database updates
 alembic -c development.ini revision --autogenerate -m "initial database"
 alembic -c development.ini upgrade head
 ```
+
+### Rebuilding
+
+Lots of breaking changes at the moment.  Rebuilding means deleting
+
+```bash
+./uploads/images
+./www/www.egg-info
+./www/inidb.cfg
+```
