@@ -15,8 +15,6 @@ from ..models.setting import Setting
 @view_defaults(route_name='download', renderer='album.jinja2')
 class DownloadViews:
     def __init__(self, request):
-        # Used by the before_insert and before_update event listeners
-        request.dbsession.info['username'] = request.user.username
         self.request = request
 
     @view_config(route_name='image', renderer='album.jinja2')
