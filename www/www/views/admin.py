@@ -11,7 +11,7 @@ class AlbumViews:
         request.dbsession.info['username'] = request.user.username
         self.request = request
 
-    @view_config(route_name='admin', renderer='admin.jinja2')
+    @view_config(route_name='admin', renderer='/admin/admin.jinja2')
     def home(self):
         return {
             'page': 'admin',

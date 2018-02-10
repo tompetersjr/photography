@@ -17,7 +17,7 @@ class AuthViews:
     def __init__(self, request):
         self.request = request
 
-    @view_config(route_name='login', renderer='login.jinja2')
+    @view_config(route_name='login', renderer='/home/login.jinja2')
     def login(self):
         next_url = self.request.params.get('next', self.request.referrer)
         if not next_url:

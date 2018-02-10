@@ -7,7 +7,7 @@ from ..models import Contact
 from ..tasks.contact import notify
 
 
-@view_defaults(route_name='home', renderer='home.jinja2')
+@view_defaults(route_name='home', renderer='/home/home.jinja2')
 class HomeViews:
     def __init__(self, request):
         # Used by the before_insert and before_update event listeners
@@ -19,19 +19,19 @@ class HomeViews:
     def home(self):
         return {'page': 'home'}
 
-    @view_config(route_name='landscapes', renderer='landscapes.jinja2')
+    @view_config(route_name='landscapes', renderer='/home/landscapes.jinja2')
     def landscapes(self):
         return {'page': 'landscapes'}
 
-    @view_config(route_name='family', renderer='family.jinja2')
+    @view_config(route_name='family', renderer='/home/family.jinja2')
     def family(self):
         return {'page': 'family'}
 
-    @view_config(route_name='about', renderer='about.jinja2')
+    @view_config(route_name='about', renderer='/home/about.jinja2')
     def about(self):
         return {'page': 'about'}
 
-    @view_config(route_name='contact', renderer='contact.jinja2')
+    @view_config(route_name='contact', renderer='/home/contact.jinja2')
     def contact(self):
         email_sent = False
 
@@ -62,6 +62,6 @@ class HomeViews:
             'url': self.request.route_url('contact'),
         }
 
-    @view_config(route_name='faq', renderer='faq.jinja2')
+    @view_config(route_name='faq', renderer='/home/faq.jinja2')
     def faq(self):
         return {'page': 'faq'}

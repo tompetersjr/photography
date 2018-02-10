@@ -17,7 +17,7 @@ class DownloadViews:
     def __init__(self, request):
         self.request = request
 
-    @view_config(route_name='image', renderer='album.jinja2')
+    @view_config(route_name='image', renderer='/album/album.jinja2')
     def download(self):
         size = self.request.matchdict['size']
         title = self.request.matchdict['title']

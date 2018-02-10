@@ -22,7 +22,7 @@ class AlbumViews:
         request.dbsession.info['username'] = request.user.username
         self.request = request
 
-    @view_config(route_name='album', renderer='album.jinja2')
+    @view_config(route_name='album', renderer='/album/album.jinja2')
     def home(self):
         album = Album().get_album_by_slug(self.request.dbsession,
                                           self.request.matchdict['album'])
