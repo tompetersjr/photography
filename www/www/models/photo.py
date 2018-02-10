@@ -119,7 +119,7 @@ class Photo(Base):
                          nullable=False)
     roles = Column(ARRAY(Text))
     title = Column(Text, nullable=False)
-    slug = Column(Text, nullable=False)
+    slug = Column(Text, nullable=False, unique=True)
     caption = Column(Text)
     original_filename = Column(Text, nullable=False)
     created_at = Column(DateTime())

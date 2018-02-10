@@ -25,7 +25,7 @@ class DownloadViews:
             join(PhotoFile.photo).\
             join(PhotoFile.photo_size).\
             filter(PhotoSize.slug == size).\
-            filter(Photo.original_filename == title).first()
+            filter(Photo.slug == title).first()
 
         setting = self.request.dbsession.query(Setting). \
             filter_by(key='storage_path').first()

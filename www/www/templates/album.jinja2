@@ -39,7 +39,7 @@
         <div class="card-deck">
             {% for photo in photo_row %}
                 <div class="card">
-                    <img class="card-img-top" src="{{ request.route_url('image', size='small', title=photo.original_filename) }}"
+                    <img class="card-img-top" src="{{ request.route_url('image', size='small', title=photo.slug) }}"
                          alt="{{ photo.title }}">
                     <div class="card-body">
                         <p class="card-title"><i class="fas fa-camera-retro"></i> {{ photo.title }}</p>

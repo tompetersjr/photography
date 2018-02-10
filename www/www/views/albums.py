@@ -1,3 +1,4 @@
+import os
 import uuid
 
 import slugify
@@ -48,19 +49,26 @@ class AlbumViews:
                     # Create a container if it doesn't already exist
                     container_name = 'images'
                     try:
-                        container = driver.get_container(container_name=container_name)
+                        container = driver.get_container(
+                            container_name=container_name)
                     except ContainerDoesNotExistError:
-                        container = driver.create_container(container_name=container_name)
+                        container = driver.create_container(
+                            container_name=container_name)
 
                     unique_filename = '{}.jpg'.format(uuid.uuid4())
 
-                    driver.upload_object_via_stream(iterator=fieldStorage.file,
-                                                    container=container,
-                                                    object_name=unique_filename)
+                    driver.upload_object_via_stream(
+                        iterator=fieldStorage.file,
+                        container=container,
+                        object_name=unique_filename)
 
                     fieldStorage.file.seek(0, 2)
                     file_size = fieldStorage.file.tell()
-                    slug = slugify.slugify(fieldStorage.filename)
+                    filename = os.path.splitext(
+                        fieldStorage.filename)[0]
+                    slug = slugify.slugify('{} {}'.format(
+                        album.slug,
+                        filename))
 
                     photo = Photo(roles=album.roles,
                                   title=fieldStorage.filename,
@@ -88,6 +96,7 @@ class AlbumViews:
             'albums': albums,
             'photos': photos,
             'breadcrumbs': breadcrumbs,
-            'url': self.request.route_url('album',
-                                          album=self.request.matchdict['album']),
+            'url': self.request.route_url(
+                'album',
+                album=self.request.matchdict['album']),
         }

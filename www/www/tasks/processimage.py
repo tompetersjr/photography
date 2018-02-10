@@ -71,9 +71,6 @@ def processimage(self, photo_slug):
             photo.exposure = meta['EXIF:ExposureTime']
         if 'EXIF:FNumber' in meta:
             photo.f_stop = meta['EXIF:FNumber']
-        if 'IPTC:ObjectName' in meta:
-            photo.title = meta['IPTC:ObjectName']
-            photo.slug = slugify.slugify(photo.title)
         if 'EXIF:ImageDescription' in meta:
             photo.caption = meta['EXIF:ImageDescription']
         if 'File:ImageHeight' in meta:
