@@ -18,4 +18,4 @@ do
   sleep 2
 done
 
-/srv/env/bin/celery worker -A www.celeryconf --ini $ENV
+/srv/env/bin/celery worker --concurency=5 -A www.celeryconf --ini $ENV
