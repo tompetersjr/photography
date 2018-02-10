@@ -51,7 +51,9 @@ If you would like a local virtual environment use the following assuming a debia
 python3 -m venv ~/envs/photography
 source ~/envs/photography/bin/activate
 pip install --upgrade pip setuptools
-sudo apt install exiftool
+# Linux or OSX?
+# sudo apt install exiftool 
+# brew install exiftool
 cd www
 pip install -e ".[testing]"
 ```
