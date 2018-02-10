@@ -21,7 +21,8 @@ class Album(Base):
     modified_by_user = relationship('Profile', foreign_keys=[modified_by])
     children = relationship('Album',
                             backref=backref('parent', remote_side=[id]))
-    photos = relationship('Photo', secondary='photo_album')
+    photos = relationship('Photo', secondary='photo_album',
+                          order_by='Photo.created_at')
 
     def __repr__(self):
         return '<Album: {}>'.format(self.title)

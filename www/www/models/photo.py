@@ -8,25 +8,31 @@ from .meta import Base
 class PhotoAlbum(Base):
     __tablename__ = 'photo_album'
 
-    photo_id = Column(Integer, ForeignKey('photo.id'), primary_key=True)
-    album_id = Column(Integer, ForeignKey('album.id'), primary_key=True)
+    photo_id = Column(Integer, ForeignKey('photo.id'),
+                      primary_key=True)
+    album_id = Column(Integer, ForeignKey('album.id'),
+                      primary_key=True)
     photo = relationship('Photo', backref=backref('albums_assoc'))
     album = relationship('Album', backref=backref('photos_assoc'))
 
     def __repr__(self):
-        return '<PhotoAlbum: {} - {}>'.format(self.photo.title, self.album.album)
+        return '<PhotoAlbum: {} - {}>'.format(self.photo.title,
+                                              self.album.album)
 
 
 class PhotoTag(Base):
     __tablename__ = 'photo_tag'
 
-    photo_id = Column(Integer, ForeignKey('photo.id'), primary_key=True)
-    tag_id = Column(Integer, ForeignKey('tag.id'), primary_key=True)
+    photo_id = Column(Integer, ForeignKey('photo.id'),
+                      primary_key=True)
+    tag_id = Column(Integer, ForeignKey('tag.id'),
+                    primary_key=True)
     photo = relationship('Photo', backref=backref('tags_assoc'))
     tag = relationship('Tag', backref=backref('photos_assoc'))
 
     def __repr__(self):
-        return '<PhotoTag: {} - {}>'.format(self.photo.title, self.tag.title)
+        return '<PhotoTag: {} - {}>'.format(self.photo.title,
+                                            self.tag.title)
 
 
 class Tag(Base):
@@ -34,9 +40,11 @@ class Tag(Base):
 
     id = Column(Integer, primary_key=True)
     created_on = Column(DateTime(timezone=True), nullable=False)
-    created_by = Column(Text, ForeignKey('profile.username'), nullable=False)
+    created_by = Column(Text, ForeignKey('profile.username'),
+                        nullable=False)
     modified_on = Column(DateTime(timezone=True), nullable=False)
-    modified_by = Column(Text, ForeignKey('profile.username'), nullable=False)
+    modified_by = Column(Text, ForeignKey('profile.username'),
+                         nullable=False)
     roles = Column(ARRAY(Text))
     title = Column(Text, nullable=False)
     created_by_user = relationship('Profile', foreign_keys=[created_by])
@@ -52,9 +60,11 @@ class PhotoSize(Base):
 
     id = Column(Integer, primary_key=True)
     created_on = Column(DateTime(timezone=True), nullable=False)
-    created_by = Column(Text, ForeignKey('profile.username'), nullable=False)
+    created_by = Column(Text, ForeignKey('profile.username'),
+                        nullable=False)
     modified_on = Column(DateTime(timezone=True), nullable=False)
-    modified_by = Column(Text, ForeignKey('profile.username'), nullable=False)
+    modified_by = Column(Text, ForeignKey('profile.username'),
+                         nullable=False)
     roles = Column(ARRAY(Text))
     title = Column(Text, nullable=False)
     slug = Column(Text, nullable=False, unique=True)
@@ -66,7 +76,9 @@ class PhotoSize(Base):
     modified_by_user = relationship('Profile', foreign_keys=[modified_by])
 
     def __repr__(self):
-        return '<PhotoSize: {} - {}x{}>'.format(self.title, self.width, self.height)
+        return '<PhotoSize: {} - {}x{}>'.format(self.title,
+                                                self.width,
+                                                self.height)
 
 
 class PhotoFile(Base):
@@ -74,11 +86,14 @@ class PhotoFile(Base):
 
     id = Column(Integer, primary_key=True)
     created_on = Column(DateTime(timezone=True), nullable=False)
-    created_by = Column(Text, ForeignKey('profile.username'), nullable=False)
+    created_by = Column(Text, ForeignKey('profile.username'),
+                        nullable=False)
     modified_on = Column(DateTime(timezone=True), nullable=False)
-    modified_by = Column(Text, ForeignKey('profile.username'), nullable=False)
+    modified_by = Column(Text, ForeignKey('profile.username'),
+                         nullable=False)
     photo_id = Column(Integer, ForeignKey('photo.id'), nullable=False)
-    photo_size_id = Column(Integer, ForeignKey('photo_size.id'), nullable=False)
+    photo_size_id = Column(Integer, ForeignKey('photo_size.id'),
+                           nullable=False)
     roles = Column(ARRAY(Text))
     container = Column(Text, nullable=False)
     filename = Column(Text, nullable=False)
@@ -97,17 +112,30 @@ class Photo(Base):
 
     id = Column(Integer, primary_key=True)
     created_on = Column(DateTime(timezone=True), nullable=False)
-    created_by = Column(Text, ForeignKey('profile.username'), nullable=False)
+    created_by = Column(Text, ForeignKey('profile.username'),
+                        nullable=False)
     modified_on = Column(DateTime(timezone=True), nullable=False)
-    modified_by = Column(Text, ForeignKey('profile.username'), nullable=False)
+    modified_by = Column(Text, ForeignKey('profile.username'),
+                         nullable=False)
     roles = Column(ARRAY(Text))
     title = Column(Text, nullable=False)
     slug = Column(Text, nullable=False)
-    description = Column(Text)
+    caption = Column(Text)
     original_filename = Column(Text, nullable=False)
+    created_at = Column(DateTime())
+    camera_make = Column(Text)
+    camera_model = Column(Text)
+    lens = Column(Text)
+    focal_length = Column(Text)
+    exposure = Column(Text)
+    f_stop = Column(Text)
+    height = Column(Text)
+    width = Column(Text)
     meta = Column(JSONB)
-    created_by_user = relationship('Profile', foreign_keys=[created_by])
-    modified_by_user = relationship('Profile', foreign_keys=[modified_by])
+    created_by_user = relationship('Profile',
+                                   foreign_keys=[created_by])
+    modified_by_user = relationship('Profile',
+                                    foreign_keys=[modified_by])
     albums = relationship('Album', secondary='photo_album')
     tags = relationship('Tag', secondary='photo_tag')
 

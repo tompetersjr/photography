@@ -1,10 +1,11 @@
-import os
+import datetime
 import json
 import tempfile
 import uuid
 from io import BytesIO
 
 import pyexifinfo
+import slugify
 from PIL import Image
 from libcloud.storage.providers import get_driver
 from libcloud.storage.types import Provider, ContainerDoesNotExistError
@@ -16,7 +17,8 @@ from www.models.setting import Setting
 from .sqlalchemytask import SqlAlchemyTask
 
 
-@app.task(base=SqlAlchemyTask, bind=True, max_retries=10, default_retry_delay=5)
+@app.task(base=SqlAlchemyTask, bind=True,
+          max_retries=10, default_retry_delay=5)
 def processimage(self, photo_slug):
     if photo_slug is None:
         return
@@ -50,6 +52,35 @@ def processimage(self, photo_slug):
         meta = pyexifinfo.information(temporary_file.name)
         photo.meta = json.dumps(meta)
 
+        if 'EXIF:CreateDate' in meta:
+            try:
+                photo.created_at = datetime.datetime.strptime(
+                    meta['EXIF:CreateDate'],
+                    '%Y:%m:%d %H:%M:%S')
+            except:
+                pass
+        if 'EXIF:Make' in meta:
+            photo.camera_make = meta['EXIF:Make']
+        if 'EXIF:Model' in meta:
+            photo.camera_model = meta['EXIF:Model']
+        if 'EXIF:LensModel' in meta:
+            photo.lens = meta['EXIF:LensModel']
+        if 'EXIF:FocalLength' in meta:
+            photo.focal_length = meta['EXIF:FocalLength']
+        if 'EXIF:ExposureTime' in meta:
+            photo.exposure = meta['EXIF:ExposureTime']
+        if 'EXIF:FNumber' in meta:
+            photo.f_stop = meta['EXIF:FNumber']
+        if 'IPTC:ObjectName' in meta:
+            photo.title = meta['IPTC:ObjectName']
+            photo.slug = slugify.slugify(photo.title)
+        if 'EXIF:ImageDescription' in meta:
+            photo.caption = meta['EXIF:ImageDescription']
+        if 'File:ImageHeight' in meta:
+            photo.height = meta['File:ImageHeight']
+        if 'File:ImageWidth' in meta:
+            photo.width = meta['File:ImageWidth']
+
         keywords = None
         if 'IPTC:Keywords' in meta:
             keywords = meta['IPTC:Keywords']
@@ -58,7 +89,8 @@ def processimage(self, photo_slug):
 
         if keywords:
             for keyword in keywords:
-                tag = self.dbsession.query(Tag).filter_by(title=keyword).first()
+                tag = self.dbsession.query(Tag).\
+                    filter_by(title=keyword).first()
                 if tag is None:
                     tag = Tag(created_by=photo_file.created_by,
                               modified_by=photo_file.modified_by,
@@ -74,12 +106,15 @@ def processimage(self, photo_slug):
                     self.dbsession.add(photo_tag)
 
         with Image.open(temporary_file) as im:
-            sizes = self.dbsession.query(PhotoSize).filter(PhotoSize.id != 1).all()
+            sizes = self.dbsession.query(PhotoSize).\
+                filter(PhotoSize.id != 1).all()
             for size in sizes:
                 try:
-                    container = driver.get_container(container_name=photo_file.container)
+                    container = driver.get_container(
+                        container_name=photo_file.container)
                 except ContainerDoesNotExistError:
-                    container = driver.create_container(container_name=photo_file.container)
+                    container = driver.create_container(
+                        container_name=photo_file.container)
 
                 basewidth = size.width
                 wpercent = (basewidth / float(im.size[0]))
@@ -90,17 +125,19 @@ def processimage(self, photo_slug):
 
                 unique_filename = '{}.jpg'.format(uuid.uuid4())
 
-                container.upload_object_via_stream(iterator=BytesIO(iterator.getvalue()),
-                                                   object_name=unique_filename)
+                container.upload_object_via_stream(
+                    iterator=BytesIO(iterator.getvalue()),
+                    object_name=unique_filename)
 
-                photo_resize_file = PhotoFile(created_by=photo_file.created_by,
-                                              modified_by=photo_file.modified_by,
-                                              roles=photo.roles,
-                                              photo=photo,
-                                              photo_size=size,
-                                              container=photo_file.container,
-                                              filename=unique_filename,
-                                              file_size=iterator.tell())
+                photo_resize_file = PhotoFile(
+                    created_by=photo_file.created_by,
+                    modified_by=photo_file.modified_by,
+                    roles=photo.roles,
+                    photo=photo,
+                    photo_size=size,
+                    container=photo_file.container,
+                    filename=unique_filename,
+                    file_size=iterator.tell())
                 self.dbsession.add(photo_resize_file)
 
                 print('{}x{} {}/{}'.format(size.width,
