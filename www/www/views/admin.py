@@ -62,7 +62,9 @@ class AlbumViews:
                        "WHERE pg_has_role(:username, a.oid, 'member') "
                        "AND rolname NOT LIKE 'pg_%' "
                        "AND rolcanlogin = false "
-                       "AND rolname != :username")
+                       "AND rolname != 'anonymous'"
+                       "AND rolname != 'authenticated'"
+                       "AND rolname != 'unauthenticated'")
             result = self.request.dbsession.execute(
                 sql, {'username': account.username})
             roles = []

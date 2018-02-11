@@ -1,7 +1,16 @@
 {% extends "admin.jinja2" %}
 
 {% block admin_content %}
-    <h1>Users</h1>
+    <div class="row">
+        <div class="col-sm-10">
+            <h1>Users</h1>
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-primary">
+                <i class="fas fa-user"></i> New User
+            </button>
+        </div>
+    </div>
     <br/>
     {% for profile_row in profiles | batch(2, None) %}
         <div class="card-deck">
@@ -11,27 +20,54 @@
                         <h5>{{ profile['data'].full_name }}</h5>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-3 text-muted">
-                            <i class="fas fa-user"></i>
-                            Username: {{ profile['data'].username }}
-                        </h6>
-                        <h6 class="card-subtitle mb-3 text-muted">
-                            <i class="fas fa-envelope"></i>
-                            Email: <a href="mailto:{{ profile['data'].email }}">{{ profile['data'].email }}</a>
-                        </h6>
-                        <h6 class="card-subtitle text-muted">
-                            <i class="fas fa-users"></i>
-                            Member Of: {% for role in profile['roles'] %}{{ role }}, {% endfor %}
-                        </h6>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr class="text-muted">
+                                    <td>
+                                        <i class="fas fa-user"></i>
+                                    </td>
+                                    <td>
+                                        Username:
+                                    </td>
+                                    <td>
+                                        {{ profile['data'].username }}
+                                    </td>
+                                </tr>
+                                <tr class="text-muted">
+                                    <td>
+                                        <i class="fas fa-envelope"></i>
+                                    </td>
+                                    <td>
+                                        Email:
+                                    </td>
+                                    <td>
+                                        <a href="mailto:{{ profile['data'].email }}">{{ profile['data'].email }}</a>
+                                    </td>
+                                </tr>
+                                <tr class="text-muted">
+                                    <td>
+                                        <i class="fas fa-users"></i>
+                                    </td>
+                                    <td>
+                                        Member Of:
+                                    </td>
+                                    <td>
+                                        {% for role in profile['roles'] %}
+                                        {{ role }}<br />
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                     <div class="card-footer">
-                        <button type="button" class="btn btn-primary btn-sm">
+                        <button type="button" class="btn btn-secondary btn-sm">
                             <i class="fas fa-pencil-alt"></i>
                         </button>
-                        <button type="button" class="btn btn-primary btn-sm">
+                        <button type="button" class="btn btn-secondary btn-sm">
                             <i class="fas fa-unlock"></i>
                         </button>
-                        <button type="button" class="btn btn-primary btn-sm">
+                        <button type="button" class="btn btn-secondary btn-sm">
                             <i class="fas fa-key"></i>
                         </button>
                     </div>
@@ -40,7 +76,7 @@
         </div>
         <br/>
     {% endfor %}
-    <hr />
+    <hr/>
     <strong>Key:</strong>&nbsp;&nbsp;
     <i class="fas fa-pencil-alt"></i> Edit&nbsp;&nbsp;
     <i class="fas fa-lock"></i> Activate&nbsp;&nbsp;
