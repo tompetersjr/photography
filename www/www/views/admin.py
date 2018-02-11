@@ -29,8 +29,12 @@ class AlbumViews:
 
         album_count = Album().count(self.request.dbsession)
         photo_count = Photo().count(self.request.dbsession)
-        disk_usage, disk_unit = sizeof_fmt(
-            PhotoFile().disk_usage(self.request.dbsession)).split(':')
+        disk_size = PhotoFile().disk_usage(self.request.dbsession)
+        if disk_size is not None:
+            disk_usage, disk_unit = sizeof_fmt(disk_size).split(':')
+        else:
+            disk_usage = 0
+            disk_unit = 'KB'
 
         return {
             'page': 'admin-dashboard',
