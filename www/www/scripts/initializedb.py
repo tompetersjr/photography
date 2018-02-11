@@ -64,8 +64,7 @@ def main(argv=sys.argv):
                           modified_on=datetime.datetime.now(), modified_by=profile_id,
                           username='photo',
                           first_name='Photo', last_name='Application',
-                          email='photo@thisistheemailaddress.com',
-                          active=True)
+                          email='photo@thisistheemailaddress.com')
         dbsession.add(profile)
 
         setting = Setting(created_on=datetime.datetime.now(),

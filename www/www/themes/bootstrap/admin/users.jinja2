@@ -2,4 +2,48 @@
 
 {% block admin_content %}
     <h1>Users</h1>
+    <br/>
+    {% for profile_row in profiles | batch(2, None) %}
+        <div class="card-deck">
+            {% for profile in profile_row %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5>{{ profile['data'].full_name }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-3 text-muted">
+                            <i class="fas fa-user"></i>
+                            Username: {{ profile['data'].username }}
+                        </h6>
+                        <h6 class="card-subtitle mb-3 text-muted">
+                            <i class="fas fa-envelope"></i>
+                            Email: <a href="mailto:{{ profile['data'].email }}">{{ profile['data'].email }}</a>
+                        </h6>
+                        <h6 class="card-subtitle text-muted">
+                            <i class="fas fa-users"></i>
+                            Member Of: {% for role in profile['roles'] %}{{ role }}, {% endfor %}
+                        </h6>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-primary btn-sm">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm">
+                            <i class="fas fa-unlock"></i>
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm">
+                            <i class="fas fa-key"></i>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <br/>
+    {% endfor %}
+    <hr />
+    <strong>Key:</strong>&nbsp;&nbsp;
+    <i class="fas fa-pencil-alt"></i> Edit&nbsp;&nbsp;
+    <i class="fas fa-lock"></i> Activate&nbsp;&nbsp;
+    <i class="fas fa-unlock"></i> Deactivate&nbsp;&nbsp;
+    <i class="fas fa-key"></i> Change Password&nbsp;&nbsp;
 {% endblock admin_content %}

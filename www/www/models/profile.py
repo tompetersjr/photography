@@ -18,7 +18,6 @@ class Profile(Base):
     first_name = Column(Text)
     last_name = Column(Text)
     email = Column(Text)
-    active = Column(Boolean, nullable=False)
 
     def __repr__(self):
         return '<Profile: {}>'.format(self.username)
@@ -26,6 +25,11 @@ class Profile(Base):
     @hybrid_property
     def full_name(self):
         return '{} {}'.format(self.first_name, self.last_name)
+
+    @classmethod
+    def get_all(cls, session):
+        return session.query(Profile).order_by(Profile.first_name,
+                                               Profile.last_name).all()
 
     @classmethod
     def create_role(cls, session, username, password):

@@ -2,10 +2,11 @@ from pyramid.view import (
     view_config,
     view_defaults
 )
-
+from sqlalchemy import text
 from ..models.album import Album
 from ..models.navigation import Navigation
 from ..models.photo import Photo, PhotoFile, Tag
+from ..models.profile import Profile
 
 
 @view_defaults(route_name='admin', renderer='admin.jinja2')
@@ -52,9 +53,31 @@ class AlbumViews:
         admin_menu = Navigation().get_navigation(self.request.dbsession,
                                                  'admin')
 
+        accounts = Profile().get_all(self.request.dbsession)
+
+        profiles = []
+        for account in accounts:
+            sql = text("SELECT rolname "
+                       "FROM pg_authid a "
+                       "WHERE pg_has_role(:username, a.oid, 'member') "
+                       "AND rolname NOT LIKE 'pg_%' "
+                       "AND rolcanlogin = false "
+                       "AND rolname != :username")
+            result = self.request.dbsession.execute(
+                sql, {'username': account.username})
+            roles = []
+            for row in result:
+                roles.append(row[0])
+
+            profiles.append({
+                'data': account,
+                'roles': roles
+            })
+
         return {
             'page': 'admin-users',
-            'admin_menu': admin_menu
+            'admin_menu': admin_menu,
+            'profiles': profiles
         }
 
     @view_config(route_name='admin-roles', renderer='/admin/roles.jinja2')

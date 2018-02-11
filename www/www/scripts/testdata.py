@@ -66,8 +66,7 @@ def main(argv=sys.argv):
                           modified_on=datetime.datetime.now(), modified_by=profile_id,
                           username=username,
                           first_name='John', last_name='Doe',
-                          email='jdoe@thisistheemailaddress.com',
-                          active=True)
+                          email='jdoe@thisistheemailaddress.com')
         profile.create_role(dbsession, username, password)
         dbsession.add(profile)
 
@@ -76,8 +75,7 @@ def main(argv=sys.argv):
                           modified_on=datetime.datetime.now(), modified_by=profile_id,
                           username=username,
                           first_name='Dan', last_name='Powers',
-                          email='dpowers@thisistheemailaddress.com',
-                          active=True)
+                          email='dpowers@thisistheemailaddress.com')
         profile.create_role(dbsession, username, password)
         dbsession.add(profile)
 
@@ -86,8 +84,7 @@ def main(argv=sys.argv):
                           modified_on=datetime.datetime.now(), modified_by=profile_id,
                           username=username,
                           first_name='Gary', last_name='Smith',
-                          email='gsmith@thisistheemailaddress.com',
-                          active=True)
+                          email='gsmith@thisistheemailaddress.com')
         profile.create_role(dbsession, username, password)
         dbsession.add(profile)
 
@@ -96,8 +93,7 @@ def main(argv=sys.argv):
                           modified_on=datetime.datetime.now(), modified_by=profile_id,
                           username=username,
                           first_name='Ray', last_name='Winter',
-                          email='rwinter@thisistheemailaddress.com',
-                          active=True)
+                          email='rwinter@thisistheemailaddress.com')
         profile.create_role(dbsession, username, password)
         dbsession.add(profile)
 
@@ -106,8 +102,7 @@ def main(argv=sys.argv):
                           modified_on=datetime.datetime.now(), modified_by=profile_id,
                           username=username,
                           first_name='Greg', last_name='Sanders',
-                          email='gsanders@thisistheemailaddress.com',
-                          active=True)
+                          email='gsanders@thisistheemailaddress.com')
         profile.create_role(dbsession, username, password)
         dbsession.add(profile)
 
