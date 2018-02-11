@@ -22,36 +22,36 @@
                     <div class="card-body">
                         <table class="table table-sm">
                             <tbody>
-                                <tr class="text-muted">
+                                <tr>
                                     <td>
                                         <i class="fas fa-user"></i>
                                     </td>
                                     <td>
                                         Username:
                                     </td>
-                                    <td>
+                                    <td class="text-muted">
                                         {{ profile['data'].username }}
                                     </td>
                                 </tr>
-                                <tr class="text-muted">
+                                <tr>
                                     <td>
                                         <i class="fas fa-envelope"></i>
                                     </td>
                                     <td>
                                         Email:
                                     </td>
-                                    <td>
+                                    <td class="text-muted">
                                         <a href="mailto:{{ profile['data'].email }}">{{ profile['data'].email }}</a>
                                     </td>
                                 </tr>
-                                <tr class="text-muted">
+                                <tr>
                                     <td>
                                         <i class="fas fa-users"></i>
                                     </td>
                                     <td>
                                         Roles:
                                     </td>
-                                    <td>
+                                    <td class="text-muted">
                                         {% for role in profile['roles'] %}
                                         {{ role }}<br />
                                         {% endfor %}

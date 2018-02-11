@@ -61,10 +61,11 @@ class AlbumViews:
                        "FROM pg_authid a "
                        "WHERE pg_has_role(:username, a.oid, 'member') "
                        "AND rolname NOT LIKE 'pg_%' "
-                       "AND rolcanlogin = false "
+                       "AND rolpassword is null "
                        "AND rolname != 'anonymous'"
                        "AND rolname != 'authenticated'"
-                       "AND rolname != 'unauthenticated'")
+                       "AND rolname != 'unauthenticated'"
+                       "ORDER BY rolname")
             result = self.request.dbsession.execute(
                 sql, {'username': account.username})
             roles = []
@@ -87,7 +88,43 @@ class AlbumViews:
         admin_menu = Navigation().get_navigation(self.request.dbsession,
                                                  'admin')
 
+        sql = text("SELECT rolname "
+                   "FROM pg_authid a "
+                   "WHERE rolname NOT LIKE 'pg_%' "
+                   "AND rolpassword is null "
+                   "AND rolname != 'anonymous'"
+                   "AND rolname != 'authenticated'"
+                   "AND rolname != 'unauthenticated' "
+                   "ORDER BY rolname")
+        result = self.request.dbsession.execute(sql)
+        roles = []
+        for row in result:
+            roles.append(row[0])
+
+        groups = []
+        for role in roles:
+            sql = text("SELECT rolname "
+                       "FROM pg_authid a "
+                       "WHERE pg_has_role(:rolename, a.oid, 'member') "
+                       "AND rolname NOT LIKE 'pg_%' "
+                       "AND rolpassword is not null "
+                       "AND rolname != 'anonymous'"
+                       "AND rolname != 'authenticated'"
+                       "AND rolname != 'unauthenticated'"
+                       "ORDER BY rolname")
+            result = self.request.dbsession.execute(
+                sql, {'rolename': role})
+            users = []
+            for row in result:
+                users.append(row[0])
+
+            groups.append({
+                'role': role,
+                'users': users
+            })
+
         return {
             'page': 'admin-roles',
-            'admin_menu': admin_menu
+            'admin_menu': admin_menu,
+            'groups': groups,
         }
