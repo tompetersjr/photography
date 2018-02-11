@@ -55,6 +55,11 @@ class Tag(Base):
     def __repr__(self):
         return '<Tag: {}>'.format(self.title)
 
+    @classmethod
+    def count(cls, session):
+        count = session.query(Tag).count()
+        return count
+
 
 class PhotoSize(Base):
     __tablename__ = 'photo_size'

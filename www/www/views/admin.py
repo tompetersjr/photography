@@ -5,7 +5,7 @@ from pyramid.view import (
 
 from ..models.album import Album
 from ..models.navigation import Navigation
-from ..models.photo import Photo, PhotoFile
+from ..models.photo import Photo, PhotoFile, Tag
 
 
 @view_defaults(route_name='admin', renderer='admin.jinja2')
@@ -29,6 +29,7 @@ class AlbumViews:
 
         album_count = Album().count(self.request.dbsession)
         photo_count = Photo().count(self.request.dbsession)
+        tag_count = Tag().count(self.request.dbsession)
         disk_size = PhotoFile().disk_usage(self.request.dbsession)
         if disk_size is not None:
             disk_usage, disk_unit = sizeof_fmt(disk_size).split(':')
@@ -40,6 +41,7 @@ class AlbumViews:
             'page': 'admin-dashboard',
             'album_count': album_count,
             'photo_count': photo_count,
+            'tag_count': tag_count,
             'disk_usage': disk_usage,
             'disk_unit': disk_unit,
             'admin_menu': admin_menu
