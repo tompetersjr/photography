@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey, Boolean
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship, backref
 
 from .meta import Base
@@ -106,6 +107,12 @@ class PhotoFile(Base):
     def __repr__(self):
         return '<PhotoFile: {}/{}>'.format(self.container, self.filename)
 
+    @classmethod
+    def disk_usage(cls, session):
+        size = session.query(
+            func.sum(PhotoFile.file_size).label('average')).scalar()
+        return size
+
 
 class Photo(Base):
     __tablename__ = 'photo'
@@ -141,3 +148,8 @@ class Photo(Base):
 
     def __repr__(self):
         return '<Photo: {}>'.format(self.title)
+
+    @classmethod
+    def count(cls, session):
+        count = session.query(Photo).count()
+        return count

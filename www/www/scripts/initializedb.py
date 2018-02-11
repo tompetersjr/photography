@@ -154,117 +154,144 @@ def main(argv=sys.argv):
                          menu_id='main',
                          sort_order=7,
                          page_title='Admin',
-                         route='admin',)
+                         route='admin-dashboard',)
+        dbsession.add(nav)
+        nav = Navigation(id=8,
+                         created_on=datetime.datetime.now(), created_by=profile_id,
+                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         roles=['administrators'],
+                         menu_id='admin',
+                         sort_order=7,
+                         page_title='Dashboard',
+                         route='admin-dashboard',)
+        dbsession.add(nav)
+        nav = Navigation(id=9,
+                         created_on=datetime.datetime.now(), created_by=profile_id,
+                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         roles=['administrators'],
+                         menu_id='admin',
+                         sort_order=7,
+                         page_title='Users',
+                         route='admin-users',)
+        dbsession.add(nav)
+        nav = Navigation(id=10,
+                         created_on=datetime.datetime.now(), created_by=profile_id,
+                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         roles=['administrators'],
+                         menu_id='admin',
+                         sort_order=7,
+                         page_title='Roles',
+                         route='admin-roles',)
         dbsession.add(nav)
 
-        nav = PhotoSize(id=1,
-                        created_on=datetime.datetime.now(), created_by=profile_id,
-                        modified_on=datetime.datetime.now(), modified_by=profile_id,
-                        roles=['administrators'],
-                        title='Original',
-                        slug='original',
-                        is_system=True,
-                        is_active=True)
-        dbsession.add(nav)
-        nav = PhotoSize(id=2,
-                        created_on=datetime.datetime.now(), created_by=profile_id,
-                        modified_on=datetime.datetime.now(), modified_by=profile_id,
-                        roles=['administrators'],
-                        title='Square',
-                        slug='square',
-                        is_system=False,
-                        is_active=True,
-                        width=120,
-                        height=120)
-        dbsession.add(nav)
-        nav = PhotoSize(id=3,
-                        created_on=datetime.datetime.now(), created_by=profile_id,
-                        modified_on=datetime.datetime.now(), modified_by=profile_id,
-                        roles=['administrators'],
-                        title='Thumbnail',
-                        slug='thumbnail',
-                        is_system=True,
-                        is_active=True,
-                        width=144,
-                        height=144)
-        dbsession.add(nav)
-        nav = PhotoSize(id=4,
-                        created_on=datetime.datetime.now(), created_by=profile_id,
-                        modified_on=datetime.datetime.now(), modified_by=profile_id,
-                        roles=['administrators'],
-                        title='Tiny',
-                        slug='tiny',
-                        is_system=False,
-                        is_active=True,
-                        width=240,
-                        height=240)
-        dbsession.add(nav)
-        nav = PhotoSize(id=5,
-                        created_on=datetime.datetime.now(), created_by=profile_id,
-                        modified_on=datetime.datetime.now(), modified_by=profile_id,
-                        roles=['administrators'],
-                        title='Extra Small',
-                        slug='extra-small',
-                        is_system=False,
-                        is_active=True,
-                        width=432,
-                        height=324)
-        dbsession.add(nav)
-        nav = PhotoSize(id=6,
-                        created_on=datetime.datetime.now(), created_by=profile_id,
-                        modified_on=datetime.datetime.now(), modified_by=profile_id,
-                        roles=['administrators'],
-                        title='Small',
-                        slug='small',
-                        is_system=True,
-                        is_active=True,
-                        width=576,
-                        height=432)
-        dbsession.add(nav)
-        nav = PhotoSize(id=7,
-                        created_on=datetime.datetime.now(), created_by=profile_id,
-                        modified_on=datetime.datetime.now(), modified_by=profile_id,
-                        roles=['administrators'],
-                        title='Medium',
-                        slug='medium',
-                        is_system=True,
-                        is_active=True,
-                        width=792,
-                        height=594)
-        dbsession.add(nav)
-        nav = PhotoSize(id=8,
-                        created_on=datetime.datetime.now(), created_by=profile_id,
-                        modified_on=datetime.datetime.now(), modified_by=profile_id,
-                        roles=['administrators'],
-                        title='Large',
-                        slug='large',
-                        is_system=True,
-                        is_active=True,
-                        width=1008,
-                        height=756)
-        dbsession.add(nav)
-        nav = PhotoSize(id=9,
-                        created_on=datetime.datetime.now(), created_by=profile_id,
-                        modified_on=datetime.datetime.now(), modified_by=profile_id,
-                        roles=['administrators'],
-                        title='Extra Large',
-                        slug='extra-large',
-                        is_system=False,
-                        is_active=True,
-                        width=1224,
-                        height=918)
-        dbsession.add(nav)
-        nav = PhotoSize(id=10,
-                        created_on=datetime.datetime.now(), created_by=profile_id,
-                        modified_on=datetime.datetime.now(), modified_by=profile_id,
-                        roles=['administrators'],
-                        title='Huge',
-                        slug='huge',
-                        is_system=False,
-                        is_active=True,
-                        width=1656,
-                        height=1242)
-        dbsession.add(nav)
+        size = PhotoSize(id=1,
+                         created_on=datetime.datetime.now(), created_by=profile_id,
+                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         roles=['administrators'],
+                         title='Original',
+                         slug='original',
+                         is_system=True,
+                         is_active=True)
+        dbsession.add(size)
+        size = PhotoSize(id=2,
+                         created_on=datetime.datetime.now(), created_by=profile_id,
+                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         roles=['administrators'],
+                         title='Square',
+                         slug='square',
+                         is_system=False,
+                         is_active=True,
+                         width=120,
+                         height=120)
+        dbsession.add(size)
+        size = PhotoSize(id=3,
+                         created_on=datetime.datetime.now(), created_by=profile_id,
+                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         roles=['administrators'],
+                         title='Thumbnail',
+                         slug='thumbnail',
+                         is_system=True,
+                         is_active=True,
+                         width=144,
+                         height=144)
+        dbsession.add(size)
+        size = PhotoSize(id=4,
+                         created_on=datetime.datetime.now(), created_by=profile_id,
+                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         roles=['administrators'],
+                         title='Tiny',
+                         slug='tiny',
+                         is_system=False,
+                         is_active=True,
+                         width=240,
+                         height=240)
+        dbsession.add(size)
+        size = PhotoSize(id=5,
+                         created_on=datetime.datetime.now(), created_by=profile_id,
+                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         roles=['administrators'],
+                         title='Extra Small',
+                         slug='extra-small',
+                         is_system=False,
+                         is_active=True,
+                         width=432,
+                         height=324)
+        dbsession.add(size)
+        size = PhotoSize(id=6,
+                         created_on=datetime.datetime.now(), created_by=profile_id,
+                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         roles=['administrators'],
+                         title='Small',
+                         slug='small',
+                         is_system=True,
+                         is_active=True,
+                         width=576,
+                         height=432)
+        dbsession.add(size)
+        size = PhotoSize(id=7,
+                         created_on=datetime.datetime.now(), created_by=profile_id,
+                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         roles=['administrators'],
+                         title='Medium',
+                         slug='medium',
+                         is_system=True,
+                         is_active=True,
+                         width=792,
+                         height=594)
+        dbsession.add(size)
+        size = PhotoSize(id=8,
+                         created_on=datetime.datetime.now(), created_by=profile_id,
+                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         roles=['administrators'],
+                         title='Large',
+                         slug='large',
+                         is_system=True,
+                         is_active=True,
+                         width=1008,
+                         height=756)
+        dbsession.add(size)
+        size = PhotoSize(id=9,
+                         created_on=datetime.datetime.now(), created_by=profile_id,
+                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         roles=['administrators'],
+                         title='Extra Large',
+                         slug='extra-large',
+                         is_system=False,
+                         is_active=True,
+                         width=1224,
+                         height=918)
+        dbsession.add(size)
+        size = PhotoSize(id=10,
+                         created_on=datetime.datetime.now(), created_by=profile_id,
+                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         roles=['administrators'],
+                         title='Huge',
+                         slug='huge',
+                         is_system=False,
+                         is_active=True,
+                         width=1656,
+                         height=1242)
+        dbsession.add(size)
 
         album1 = Album(created_on=datetime.datetime.now(), created_by=profile_id,
                        modified_on=datetime.datetime.now(), modified_by=profile_id,

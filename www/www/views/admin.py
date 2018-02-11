@@ -3,6 +3,10 @@ from pyramid.view import (
     view_defaults
 )
 
+from ..models.album import Album
+from ..models.navigation import Navigation
+from ..models.photo import Photo, PhotoFile
+
 
 @view_defaults(route_name='admin', renderer='admin.jinja2')
 class AlbumViews:
@@ -11,8 +15,48 @@ class AlbumViews:
         request.dbsession.info['username'] = request.user.username
         self.request = request
 
-    @view_config(route_name='admin', renderer='/admin/admin.jinja2')
-    def home(self):
+    @view_config(route_name='admin-dashboard', renderer='/admin/dashboard.jinja2')
+    def dashboard(self):
+        admin_menu = Navigation().get_navigation(self.request.dbsession,
+                                                 'admin')
+
+        def sizeof_fmt(num, suffix='B'):
+            for unit in ['', ':K', ':M', ':G', ':T', ':P', ':E', ':Z']:
+                if abs(num) < 1024.0:
+                    return "%3.1f%s%s" % (num, unit, suffix)
+                num /= 1024.0
+            return "%.1f%s%s" % (num, ':Y', suffix)
+
+        album_count = Album().count(self.request.dbsession)
+        photo_count = Photo().count(self.request.dbsession)
+        disk_usage, disk_unit = sizeof_fmt(
+            PhotoFile().disk_usage(self.request.dbsession)).split(':')
+
         return {
-            'page': 'admin',
+            'page': 'admin-dashboard',
+            'album_count': album_count,
+            'photo_count': photo_count,
+            'disk_usage': disk_usage,
+            'disk_unit': disk_unit,
+            'admin_menu': admin_menu
+        }
+
+    @view_config(route_name='admin-users', renderer='/admin/users.jinja2')
+    def users(self):
+        admin_menu = Navigation().get_navigation(self.request.dbsession,
+                                                 'admin')
+
+        return {
+            'page': 'admin-users',
+            'admin_menu': admin_menu
+        }
+
+    @view_config(route_name='admin-roles', renderer='/admin/roles.jinja2')
+    def roles(self):
+        admin_menu = Navigation().get_navigation(self.request.dbsession,
+                                                 'admin')
+
+        return {
+            'page': 'admin-roles',
+            'admin_menu': admin_menu
         }

@@ -15,4 +15,16 @@ $(document).ready(function () {
         $('html, body').animate({scrollTop: 0}, duration);
         return false;
     })
+
+    $('.count').each(function () {
+        $(this).prop('Counter',0).animate({
+            Counter: $(this).text()
+        }, {
+            duration: 800,
+            easing: 'swing',
+            step: function (now) {
+                $(this).text(Math.ceil(now).toLocaleString());
+            }
+        });
+    });
 });

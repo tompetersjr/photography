@@ -18,7 +18,7 @@ class Navigation(Base):
     menu_id = Column(Text, nullable=False)
     sort_order = Column(Integer, nullable=False)
     page_title = Column(Text, nullable=False)
-    route = Column(Text, nullable=False, unique=True)
+    route = Column(Text, nullable=False)
     params = Column(JSONB)
     created_by_user = relationship('Profile', foreign_keys=[created_by])
     modified_by_user = relationship('Profile', foreign_keys=[modified_by])

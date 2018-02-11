@@ -1,4 +1,31 @@
 {% extends "base.jinja2" %}
 
 {% block content %}
+    <br/>
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="list-group">
+                {% for nav in admin_menu %}
+                    <a href="{{ request.route_url(nav.route, **nav.params) }}"
+                       class="list-group-item list-group-item-action {% if nav.route == page %}active{% endif %}">
+                        {{ nav.page_title }} <span class="sr-only">{% if nav.route == page %}(current){% endif %}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-lg-10">
+            {% block admin_content %}
+                <p>No admin content</p>
+            {% endblock admin_content %}
+        </div>
+    </div>
 {% endblock content %}
+
+{% block javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"
+            integrity="sha256-N4u5BjTLNwmGul6RgLoESPNqDFVUibVuOYhP4gJgrew="
+            crossorigin="anonymous"></script>
+
+    {% block admin_javascript %}
+    {% endblock admin_javascript %}
+{% endblock javascript %}

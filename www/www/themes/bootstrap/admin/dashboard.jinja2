@@ -1,0 +1,49 @@
+{% extends "admin.jinja2" %}
+
+{% block admin_content %}
+    <h1>Dashboard</h1>
+    <br/>
+    <h2>Counts</h2>
+    <hr />
+    <div class="row">
+        <div class="col-lg-4 text-center">
+            <h5>Albums</h5>
+            <h1><i class="fas fa-images"></i></h1>
+            <h2><span class="count">{{ album_count }}</span></h2>
+        </div>
+        <div class="col-lg-4 text-center">
+            <h5>Photos</h5>
+            <h1><i class="fas fa-image"></i></h1>
+            <h2><span class="count">{{ photo_count }}</span></h2>
+        </div>
+        <div class="col-lg-4 text-center">
+            <h5>Disk Usage</h5>
+            <h1><i class="fas fa-hdd"></i></h1>
+            <h2><span class="count">{{ disk_usage }}</span> {{ disk_unit }}</h2>
+        </div>
+    </div>
+    <br/>
+    <h2>Albums With Most Photos</h2>
+    <hr />
+    <canvas id="topAlbumsPhotoCount" width="400" height="150"
+            style="display: block; width: 400px; height: 150px;"></canvas>
+{% endblock admin_content %}
+
+{% block admin_javascript %}
+    <script>
+        var request = $.ajax({
+          url: "{{ request.route_url('api-photo-count-by-album') }}",
+          method: 'GET',
+          dataType: 'json'
+        });
+
+        request.done(function( chart_def ) {
+            var ctx = $("#topAlbumsPhotoCount");
+            var chart = new Chart(ctx, chart_def);
+        });
+
+        request.fail(function( jqXHR, textStatus ) {
+            alert( "Request failed: " + textStatus );
+        });
+    </script>
+{% endblock admin_javascript %}

@@ -1,8 +1,11 @@
 from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship, backref
 
 from .meta import Base
+
+from .photo import Photo, PhotoAlbum
 
 
 class Album(Base):
@@ -33,6 +36,11 @@ class Album(Base):
         return album
 
     @classmethod
+    def count(cls, session):
+        count = session.query(Album).count() - 1  # Skip Root
+        return count
+
+    @classmethod
     def get_breadcrumbs(cls, session, slug):
         results = []
         album = session.query(Album).filter_by(slug=slug).first()
@@ -52,4 +60,18 @@ class Album(Base):
 
         return results
 
+    @classmethod
+    def get_photo_counts_by_album(cls, session, top_num=5):
+        if top_num > 5:
+            raise ValueError('You can only return up to 5 results.')
 
+        result = session.query(Album.title,
+                               func.count(Photo.id).label('Count')).\
+            join(PhotoAlbum).\
+            join(Photo).\
+            filter(Album.slug != 'root').\
+            group_by(Album.title).\
+            order_by(func.count(Photo.id).desc()).\
+            limit(top_num).\
+            all()
+        return result

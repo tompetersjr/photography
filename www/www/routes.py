@@ -16,12 +16,17 @@ def includeme(config):
     config.add_route('album', '/album/{album}')
     config.add_route('about', '/about')
     config.add_route('contact', '/contact')
-    config.add_route('admin', '/admin')
+    config.add_route('admin-dashboard', '/admin/dashboard')
+    config.add_route('admin-users', '/admin/users')
+    config.add_route('admin-roles', '/admin/roles')
     config.add_route('faq', '/faq')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.add_route('upload', '/upload')
     config.add_route('image', '/image/{size}/{title}')
+
+    # API
+    config.add_route('api-photo-count-by-album', '/api/album-photo-counts')
 
 
 @forbidden_view_config()
