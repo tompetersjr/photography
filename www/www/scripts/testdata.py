@@ -27,9 +27,9 @@ from ..models.album import Album
 from ..models.contact import Contact
 from ..models.navigation import Navigation
 from ..models.photo import Photo, PhotoAlbum
+from ..models.profile import Profile, ProfileGroup
 from ..models.setting import Setting
 from ..models.tasks import Task
-from ..models.profile import Profile
 
 
 def usage(argv):
@@ -121,6 +121,19 @@ def main(argv=sys.argv):
                       key='site_contact',
                       value='info@myphotoemailaddressishere.com')
         dbsession.add(nav)
+
+        group = ProfileGroup(created_on=datetime.datetime.now(), created_by=profile_id,
+                             modified_on=datetime.datetime.now(), modified_by=profile_id,
+                             rolename='family', title='Family')
+        dbsession.add(group)
+        group = ProfileGroup(created_on=datetime.datetime.now(), created_by=profile_id,
+                             modified_on=datetime.datetime.now(), modified_by=profile_id,
+                             rolename='friends', title='Friends')
+        dbsession.add(group)
+        group = ProfileGroup(created_on=datetime.datetime.now(), created_by=profile_id,
+                             modified_on=datetime.datetime.now(), modified_by=profile_id,
+                             rolename='client', title='Client')
+        dbsession.add(group)
 
         dbsession.execute('ALTER ROLE administrators WITH USER jdoe')
         dbsession.execute('CREATE ROLE family WITH USER gsanders, rwinter')

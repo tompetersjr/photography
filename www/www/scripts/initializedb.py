@@ -26,8 +26,9 @@ from ..models import (
 from ..models.album import Album
 from ..models.contact import Contact
 from ..models.navigation import Navigation
-from ..models.profile import Profile
-from ..models.photo import Photo, PhotoAlbum, PhotoTag, Tag, PhotoSize, PhotoFile
+from ..models.profile import Profile, ProfileGroup
+from ..models.photo import Photo, PhotoAlbum, PhotoTag, \
+    Tag, PhotoSize, PhotoFile
 from ..models.setting import Setting
 from ..models.tasks import Task
 
@@ -60,12 +61,23 @@ def main(argv=sys.argv):
     with transaction.manager:
         dbsession = get_tm_session(session_factory, transaction.manager)
 
-        profile = Profile(created_on=datetime.datetime.now(), created_by=profile_id,
-                          modified_on=datetime.datetime.now(), modified_by=profile_id,
-                          username='photo',
-                          first_name='Photo', last_name='Application',
+        profile = Profile(username='photo',
+                          created_on=datetime.datetime.now(),
+                          created_by=profile_id,
+                          modified_on=datetime.datetime.now(),
+                          modified_by=profile_id,
+                          first_name='Photo',
+                          last_name='Application',
                           email='photo@thisistheemailaddress.com')
         dbsession.add(profile)
+
+        group = ProfileGroup(rolename='administrators',
+                             created_on=datetime.datetime.now(),
+                             created_by=profile_id,
+                             modified_on=datetime.datetime.now(),
+                             modified_by=profile_id,
+                             title='Administrators')
+        dbsession.add(group)
 
         setting = Setting(created_on=datetime.datetime.now(),
                           created_by=profile_id,
@@ -90,8 +102,10 @@ def main(argv=sys.argv):
         dbsession.add(setting)
 
         nav = Navigation(id=1,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['unauthenticated'],
                          menu_id='main',
                          sort_order=1,
@@ -99,8 +113,10 @@ def main(argv=sys.argv):
                          route='home',)
         dbsession.add(nav)
         nav = Navigation(id=2,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['unauthenticated'],
                          menu_id='main',
                          sort_order=2,
@@ -108,8 +124,10 @@ def main(argv=sys.argv):
                          route='landscapes',)
         dbsession.add(nav)
         nav = Navigation(id=3,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['unauthenticated'],
                          menu_id='main',
                          sort_order=3,
@@ -117,8 +135,10 @@ def main(argv=sys.argv):
                          route='family',)
         dbsession.add(nav)
         nav = Navigation(id=4,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['authenticated'],
                          menu_id='main',
                          sort_order=4,
@@ -129,8 +149,10 @@ def main(argv=sys.argv):
                          })
         dbsession.add(nav)
         nav = Navigation(id=5,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['unauthenticated'],
                          menu_id='main',
                          sort_order=5,
@@ -138,8 +160,10 @@ def main(argv=sys.argv):
                          route='about',)
         dbsession.add(nav)
         nav = Navigation(id=6,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['unauthenticated'],
                          menu_id='main',
                          sort_order=6,
@@ -147,8 +171,10 @@ def main(argv=sys.argv):
                          route='contact',)
         dbsession.add(nav)
         nav = Navigation(id=7,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          menu_id='main',
                          sort_order=7,
@@ -156,8 +182,10 @@ def main(argv=sys.argv):
                          route='admin-dashboard',)
         dbsession.add(nav)
         nav = Navigation(id=8,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          menu_id='admin',
                          sort_order=7,
@@ -165,8 +193,10 @@ def main(argv=sys.argv):
                          route='admin-dashboard',)
         dbsession.add(nav)
         nav = Navigation(id=9,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          menu_id='admin',
                          sort_order=7,
@@ -174,8 +204,10 @@ def main(argv=sys.argv):
                          route='admin-users',)
         dbsession.add(nav)
         nav = Navigation(id=10,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          menu_id='admin',
                          sort_order=7,
@@ -184,8 +216,10 @@ def main(argv=sys.argv):
         dbsession.add(nav)
 
         size = PhotoSize(id=1,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          title='Original',
                          slug='original',
@@ -193,8 +227,10 @@ def main(argv=sys.argv):
                          is_active=True)
         dbsession.add(size)
         size = PhotoSize(id=2,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          title='Square',
                          slug='square',
@@ -204,8 +240,10 @@ def main(argv=sys.argv):
                          height=120)
         dbsession.add(size)
         size = PhotoSize(id=3,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          title='Thumbnail',
                          slug='thumbnail',
@@ -215,8 +253,10 @@ def main(argv=sys.argv):
                          height=144)
         dbsession.add(size)
         size = PhotoSize(id=4,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          title='Tiny',
                          slug='tiny',
@@ -226,8 +266,10 @@ def main(argv=sys.argv):
                          height=240)
         dbsession.add(size)
         size = PhotoSize(id=5,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          title='Extra Small',
                          slug='extra-small',
@@ -237,8 +279,10 @@ def main(argv=sys.argv):
                          height=324)
         dbsession.add(size)
         size = PhotoSize(id=6,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          title='Small',
                          slug='small',
@@ -248,8 +292,10 @@ def main(argv=sys.argv):
                          height=432)
         dbsession.add(size)
         size = PhotoSize(id=7,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          title='Medium',
                          slug='medium',
@@ -259,8 +305,10 @@ def main(argv=sys.argv):
                          height=594)
         dbsession.add(size)
         size = PhotoSize(id=8,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          title='Large',
                          slug='large',
@@ -270,8 +318,10 @@ def main(argv=sys.argv):
                          height=756)
         dbsession.add(size)
         size = PhotoSize(id=9,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          title='Extra Large',
                          slug='extra-large',
@@ -281,8 +331,10 @@ def main(argv=sys.argv):
                          height=918)
         dbsession.add(size)
         size = PhotoSize(id=10,
-                         created_on=datetime.datetime.now(), created_by=profile_id,
-                         modified_on=datetime.datetime.now(), modified_by=profile_id,
+                         created_on=datetime.datetime.now(),
+                         created_by=profile_id,
+                         modified_on=datetime.datetime.now(),
+                         modified_by=profile_id,
                          roles=['administrators'],
                          title='Huge',
                          slug='huge',
@@ -292,8 +344,10 @@ def main(argv=sys.argv):
                          height=1242)
         dbsession.add(size)
 
-        album1 = Album(created_on=datetime.datetime.now(), created_by=profile_id,
-                       modified_on=datetime.datetime.now(), modified_by=profile_id,
+        album1 = Album(created_on=datetime.datetime.now(),
+                       created_by=profile_id,
+                       modified_on=datetime.datetime.now(),
+                       modified_by=profile_id,
                        roles=['authenticated'],
                        title='Root', slug=slugify.slugify('Root'))
         dbsession.add(album1)
@@ -311,7 +365,7 @@ def main(argv=sys.argv):
             -- Enable row level security
             ALTER TABLE album ENABLE ROW LEVEL SECURITY;
 
-            -- Allow an administators to do anything
+            -- Allow an administrator to do anything
             CREATE POLICY administrators ON album FOR ALL TO administrators
                 USING (true)
                 WITH CHECK (true);
@@ -341,7 +395,7 @@ def main(argv=sys.argv):
             -- Enable row level security
             ALTER TABLE contact ENABLE ROW LEVEL SECURITY;
 
-            -- Allow an administators to do anything
+            -- Allow an administrator to do anything
             CREATE POLICY administrators ON contact FOR ALL TO administrators
                 USING (true)
                 WITH CHECK (true);
@@ -367,7 +421,7 @@ def main(argv=sys.argv):
             -- Enable row level security
             ALTER TABLE navigation ENABLE ROW LEVEL SECURITY;
 
-            -- Allow an administators to do anything
+            -- Allow an administrator to do anything
             CREATE POLICY administrators ON navigation FOR ALL TO administrators
                 USING (true)
                 WITH CHECK (true);
@@ -391,7 +445,7 @@ def main(argv=sys.argv):
             -- Enable row level security
             ALTER TABLE photo ENABLE ROW LEVEL SECURITY;
 
-            -- Allow an administators to do anything
+            -- Allow an administrator to do anything
             CREATE POLICY administrators ON photo FOR ALL TO administrators
                 USING (true)
                 WITH CHECK (true);
@@ -419,7 +473,7 @@ def main(argv=sys.argv):
             -- Enable row level security
             ALTER TABLE setting ENABLE ROW LEVEL SECURITY;
 
-            -- Allow an administators to do anything
+            -- Allow an administrator to do anything
             CREATE POLICY administrators ON setting FOR ALL TO administrators
                 USING (true)
                 WITH CHECK (true);
@@ -434,7 +488,7 @@ def main(argv=sys.argv):
             -- Enable row level security
             ALTER TABLE task ENABLE ROW LEVEL SECURITY;
 
-            -- Allow an administators to do anything
+            -- Allow an administrator to do anything
             CREATE POLICY administrators ON task FOR ALL TO administrators
                 USING (true)
                 WITH CHECK (true);
@@ -449,7 +503,7 @@ def main(argv=sys.argv):
             -- Enable row level security
             ALTER TABLE profile ENABLE ROW LEVEL SECURITY;
 
-            -- Allow an administators to do anything
+            -- Allow an administrator to do anything
             CREATE POLICY administrators ON profile FOR ALL TO administrators
                 USING (true)
                 WITH CHECK (true);
@@ -468,6 +522,28 @@ def main(argv=sys.argv):
                 WITH CHECK (username = current_user);
         """)
 
+        # PROFILE_GROUP: Setup row level security for the profile_group table
+        dbsession.execute("""
+            -- Grant permissions to the table
+            GRANT SELECT, INSERT, UPDATE, DELETE ON profile_group TO administrators;
+            GRANT SELECT ON profile_group TO authenticated, unauthenticated;
+
+            -- Enable row level security
+            ALTER TABLE profile_group ENABLE ROW LEVEL SECURITY;
+
+            -- Allow an administrator to do anything
+            CREATE POLICY administrators ON profile_group FOR ALL TO administrators
+                USING (true)
+                WITH CHECK (true);
+
+            -- Allow viewers to select rows on the table if they are
+            -- in the proper group
+            CREATE POLICY viewers ON profile_group FOR SELECT
+                USING (roles && (SELECT ARRAY(SELECT pg_get_userbyid(oid)
+                                              FROM pg_authid a 
+                                              WHERE pg_has_role(current_user, a.oid, 'member'))::text[]));
+        """)
+
         # PHOTO_ALBUM: Setup row level security for the photo_album table
         dbsession.execute("""
             -- Grant permissions to the table
@@ -477,7 +553,7 @@ def main(argv=sys.argv):
             -- Enable row level security
             ALTER TABLE photo_album ENABLE ROW LEVEL SECURITY;
 
-            -- Allow an administators to do anything
+            -- Allow an administrator to do anything
             CREATE POLICY administrators ON photo_album FOR ALL TO administrators
                 USING (true)
                 WITH CHECK (true);
@@ -492,7 +568,7 @@ def main(argv=sys.argv):
             -- Enable row level security
             ALTER TABLE photo_tag ENABLE ROW LEVEL SECURITY;
 
-            -- Allow an administators to do anything
+            -- Allow an administrator to do anything
             CREATE POLICY administrators ON photo_tag FOR ALL TO administrators
                 USING (true)
                 WITH CHECK (true);
@@ -509,7 +585,7 @@ def main(argv=sys.argv):
             -- Enable row level security
             ALTER TABLE tag ENABLE ROW LEVEL SECURITY;
 
-            -- Allow an administators to do anything
+            -- Allow an administrator to do anything
             CREATE POLICY administrators ON tag FOR ALL TO administrators
                 USING (true)
                 WITH CHECK (true);
@@ -524,7 +600,7 @@ def main(argv=sys.argv):
             -- Enable row level security
             ALTER TABLE photo_size ENABLE ROW LEVEL SECURITY;
 
-            -- Allow an administators to do anything
+            -- Allow an administrator to do anything
             CREATE POLICY administrators ON photo_size FOR ALL TO administrators
                 USING (true)
                 WITH CHECK (true);
@@ -541,7 +617,7 @@ def main(argv=sys.argv):
             -- Enable row level security
             ALTER TABLE photo_file ENABLE ROW LEVEL SECURITY;
 
-            -- Allow an administators to do anything
+            -- Allow an administrator to do anything
             CREATE POLICY administrators ON photo_file FOR ALL TO administrators
                 USING (true)
                 WITH CHECK (true);

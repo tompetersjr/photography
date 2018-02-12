@@ -1,9 +1,40 @@
-from sqlalchemy import Column, Boolean, Text, DateTime, ForeignKey, text
+from sqlalchemy import Column, Text, DateTime, ForeignKey, text
 from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from .meta import Base
+
+
+class ProfileGroup(Base):
+    __tablename__ = 'profile_group'
+
+    rolename = Column(Text, primary_key=True, nullable=False, unique=True)
+    created_on = Column(DateTime(timezone=True), nullable=False)
+    created_by = Column(Text, ForeignKey('profile.username'), nullable=False)
+    modified_on = Column(DateTime(timezone=True), nullable=False)
+    modified_by = Column(Text, ForeignKey('profile.username'), nullable=False)
+    title = Column(Text, nullable=False, unique=True)
+    roles = Column(ARRAY(Text))
+
+    def __repr__(self):
+        return '<ProfileGroup: {}>'.format(self.rolename)
+
+    @classmethod
+    def get_all(cls, session):
+        return session.query(ProfileGroup).order_by(ProfileGroup.rolename).all()
+
+    @classmethod
+    def create_role(cls, session, rolename):
+        sql = text('SELECT 1 '
+                   'FROM pg_roles '
+                   'WHERE rolname=:rolename')
+        result = session.execute(sql, {'rolename':rolename})
+
+        if result.rowcount == 0:
+            sql = "CREATE ROLE {}".format(rolename)
+            session.execute(sql)
+
+        return
 
 
 class Profile(Base):

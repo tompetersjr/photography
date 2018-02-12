@@ -12,7 +12,7 @@ from .album import Album
 from .contact import Contact
 from .navigation import Navigation
 from .photo import Photo, PhotoAlbum, PhotoTag, PhotoFile, PhotoSize, Tag
-from .profile import Profile
+from .profile import Profile, ProfileGroup
 from .setting import Setting
 from .tasks import Task
 

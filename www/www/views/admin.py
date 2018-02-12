@@ -6,7 +6,7 @@ from sqlalchemy import text
 from ..models.album import Album
 from ..models.navigation import Navigation
 from ..models.photo import Photo, PhotoFile, Tag
-from ..models.profile import Profile
+from ..models.profile import Profile, ProfileGroup
 
 
 @view_defaults(route_name='admin', renderer='admin.jinja2')
@@ -88,38 +88,41 @@ class AlbumViews:
         admin_menu = Navigation().get_navigation(self.request.dbsession,
                                                  'admin')
 
-        sql = text("SELECT rolname "
-                   "FROM pg_authid a "
-                   "WHERE rolname NOT LIKE 'pg_%' "
-                   "AND rolpassword is null "
-                   "AND rolname != 'anonymous'"
-                   "AND rolname != 'authenticated'"
-                   "AND rolname != 'unauthenticated' "
-                   "ORDER BY rolname")
-        result = self.request.dbsession.execute(sql)
-        roles = []
-        for row in result:
-            roles.append(row[0])
+        roles = ProfileGroup().get_all(self.request.dbsession)
 
         groups = []
         for role in roles:
-            sql = text("SELECT rolname "
-                       "FROM pg_authid a "
-                       "WHERE pg_has_role(:rolename, a.oid, 'member') "
-                       "AND rolname NOT LIKE 'pg_%' "
-                       "AND rolpassword is not null "
-                       "AND rolname != 'anonymous'"
-                       "AND rolname != 'authenticated'"
-                       "AND rolname != 'unauthenticated'"
-                       "ORDER BY rolname")
+            sql = text(
+"""
+  SELECT ARRAY(SELECT ro_b.rolname
+                 FROM pg_catalog.pg_auth_members ro
+                 JOIN pg_catalog.pg_roles ro_b ON ro_b.oid = ro.roleid
+                WHERE ro.member = r.oid) as roleof
+       , ARRAY(SELECT mo_b.rolname
+                 FROM pg_catalog.pg_auth_members mo
+                 JOIN pg_catalog.pg_roles mo_b ON mo_b.oid = mo.member
+                WHERE mo.roleid = r.oid) as memberof
+    FROM pg_catalog.pg_roles r
+   WHERE r.rolname = :rolename
+ORDER BY 1;
+""")
             result = self.request.dbsession.execute(
-                sql, {'rolename': role})
-            users = []
-            for row in result:
-                users.append(row[0])
+                sql, {'rolename': role.rolename})
+            if result:
+                data = result.first()
+                member_roles_results = data[0]
+                users = data[1]
+            else:
+                member_roles_results = None
+                users = None
+
+            member_roles = []
+            for item in member_roles_results:
+                member_roles.append(item.capitalize())
 
             groups.append({
                 'role': role,
+                'member_roles': member_roles,
                 'users': users
             })
 
