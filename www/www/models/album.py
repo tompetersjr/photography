@@ -18,6 +18,7 @@ class Album(Base):
     modified_by = Column(Text, ForeignKey('profile.username'), nullable=False)
     roles = Column(ARRAY(Text))
     parent_id = Column(Integer, ForeignKey("album.id"))
+    sort_order = Column(Integer)
     title = Column(Text, nullable=False)
     slug = Column(Text, nullable=False, unique=True)
     created_by_user = relationship('Profile', foreign_keys=[created_by])
