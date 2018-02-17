@@ -71,6 +71,9 @@ def main(argv=sys.argv):
                           email='photo@thisistheemailaddress.com')
         dbsession.add(profile)
 
+    with transaction.manager:
+        dbsession = get_tm_session(session_factory, transaction.manager)
+
         group = ProfileGroup(rolename='administrators',
                              created_on=datetime.datetime.now(),
                              created_by=profile_id,

@@ -7,6 +7,9 @@ from pyramid.security import (
 )
 from pyramid.view import forbidden_view_config
 
+from .api.album import AlbumsView, AlbumView
+from .api.auth import AuthView
+
 
 def includeme(config):
     config.add_static_view('static', 'static', cache_max_age=3600)
@@ -26,6 +29,15 @@ def includeme(config):
     config.add_route('image', '/image/{size}/{title}')
 
     # API
+    config.add_route('api_login', 'api/login')
+    config.add_view(AuthView, attr='post', request_method='POST')
+    config.add_route('api_albums', 'api/albums')
+    config.add_view(AlbumsView, attr='get', request_method='GET')
+    config.add_view(AlbumsView, attr='post', request_method='POST')
+    config.add_route('api_album', 'api/album')
+    config.add_view(AlbumView, attr='get', request_method='GET')
+    config.add_view(AlbumView, attr='put', request_method='Put')
+    config.add_view(AlbumView, attr='delete', request_method='DELETE')
     config.add_route('api-photo-count-by-album', '/api/album-photo-counts')
 
 

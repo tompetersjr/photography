@@ -32,6 +32,10 @@ class Album(Base):
         return '<Album: {}>'.format(self.title)
 
     @classmethod
+    def get_all(cls, session):
+        return session.query(Album).all()
+
+    @classmethod
     def get_album_by_slug(cls, session, slug):
         album = session.query(Album).filter_by(slug=slug).first()
         return album

@@ -4,8 +4,8 @@ services:
   www:
     build: ./www
     network_mode: bridge
-    command: serve.sh
-    #command: sleep infinity  # Useful for debugging
+    #command: serve.sh
+    command: sleep infinity  # Useful for debugging
     links:
       - rabbitmq
       - redis

@@ -1,15 +1,44 @@
-from pyramid.view import view_config
+from pyramid.view import view_config, view_defaults
 
 from ..models.album import Album
 
 
-class AlbumViews:
+@view_defaults(route_name='api_albums', renderer='json')
+class AlbumsView:
     def __init__(self, request):
         # Used by the before_insert and before_update event listeners
-        request.dbsession.info['username'] = request.user.username
         self.request = request
 
-    @view_config(route_name='api-photo-count-by-album', renderer='json')
+    def get(self):
+        return Album().get_all(self.request.dbsession)
+
+    def post(self):
+        return {'get': 'test'}
+
+
+@view_defaults(route_name='api_album', renderer='json')
+class AlbumView:
+    def __init__(self, request):
+        # Used by the before_insert and before_update event listeners
+        self.request = request
+
+    def get(self):
+        return Album().get_all(self.request.dbsession)
+
+    def put(self):
+        return {'get': 'test'}
+
+    def delete(self):
+        return {'get': 'test'}
+
+
+@view_defaults(renderer='json')
+class AlbumGraphViews:
+    def __init__(self, request):
+        # Used by the before_insert and before_update event listeners
+        self.request = request
+
+    @view_config(route_name='api-photo-count-by-album')
     def api_photo_count_by_album(self):
         counts = Album().get_photo_counts_by_album(self.request.dbsession)
 
