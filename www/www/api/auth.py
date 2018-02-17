@@ -1,5 +1,6 @@
 import psycopg2
 
+from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.view import view_defaults
 
 
@@ -12,6 +13,7 @@ class AuthView:
     def post(self):
         username = self.request.json_body['login']
         password = self.request.json_body['password']
+        error = ''
 
         try:
             # Use psycopg2 to validate our login
@@ -26,14 +28,16 @@ class AuthView:
             profile = cur.fetchone()
             username = profile[0]
         except psycopg2.OperationalError as e:
-            message = 'Failed login'
+            error = 'Failed login'
 
         if username:
+            token = self.request.create_jwt_token(username)
             return {
-                'result': 'ok',
-                'token': self.request.create_jwt_token(username)
+                'success': True,
+                'token': token
             }
         else:
             return {
-                'result': 'error'
+                'success': False,
+                'result': error
             }

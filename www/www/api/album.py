@@ -10,7 +10,15 @@ class AlbumsView:
         self.request = request
 
     def get(self):
-        return Album().get_all(self.request.dbsession)
+        albums = Album().get_all(self.request.dbsession)
+        data = []
+        for album in albums:
+            data.append({
+                'id': album.id,
+                'title': album.title,
+                'slug': album.slug
+            })
+        return data
 
     def post(self):
         return {'get': 'test'}
@@ -23,7 +31,15 @@ class AlbumView:
         self.request = request
 
     def get(self):
-        return Album().get_all(self.request.dbsession)
+        albums = Album().get_all(self.request.dbsession)
+        data = []
+        for album in albums:
+            data.append({
+                'id': album.id,
+                'title': album.title,
+                'slug': album.slug
+            })
+        return data
 
     def put(self):
         return {'get': 'test'}
