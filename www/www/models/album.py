@@ -31,6 +31,7 @@ class Album(Base):
     modified_by = Column(Text, ForeignKey('profile.username'), nullable=False)
     roles = Column(ARRAY(Text))
     parent_id = Column(Integer, ForeignKey("album.id"))
+    cover_photo_id = Column(Integer, ForeignKey('photo.id'))
     sort_order = Column(Integer)
     title = Column(Text, nullable=False)
     slug = Column(Text, nullable=False)
