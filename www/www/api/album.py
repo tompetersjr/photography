@@ -14,7 +14,7 @@ class AlbumsView:
     def get(self):
         albums = Album().get_all(self.request.dbsession)
         schema = AlbumSchema(many=True,
-                             only=('id', 'parent_id',
+                             only=('id', 'parent_id', 'cover_photo_id',
                                    'sort_order', 'title', 'slug')
                              )
         result = schema.dump(albums)
@@ -48,7 +48,7 @@ class AlbumsView:
                               title=data['title'], slug=data['slug'])
             self.request.dbsession.add(new_album)
 
-            schema = AlbumSchema(only=('id', 'parent_id',
+            schema = AlbumSchema(only=('id', 'parent_id', 'cover_photo_id',
                                        'sort_order', 'title', 'slug'))
             result = schema.dump(new_album)
             data = result.data
@@ -78,7 +78,7 @@ class AlbumView:
     def get(self):
         album = Album().get_album_by_slug(self.request.dbsession,
                                           self.request.matchdict['album'])
-        schema = AlbumSchema(only=('id', 'parent_id',
+        schema = AlbumSchema(only=('id', 'parent_id', 'cover_photo_id',
                                    'sort_order', 'title', 'slug'))
         result = schema.dump(album)
         data = result.data
@@ -111,7 +111,7 @@ class AlbumView:
 
         self.request.dbsession.add(album)
 
-        schema = AlbumSchema(only=('id', 'parent_id',
+        schema = AlbumSchema(only=('id', 'parent_id', 'cover_photo_id',
                                    'sort_order', 'title', 'slug'))
         result = schema.dump(album)
         data = result.data

@@ -16,6 +16,7 @@ class AlbumSchema(Schema):
     modified_on = fields.DateTime()
     modified_by = fields.Str()
     parent_id = fields.Int()
+    cover_photo_id = fields.Int()
     sort_order = fields.Int()
     title = fields.Str()
     slug = fields.Str()
