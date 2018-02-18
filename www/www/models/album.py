@@ -1,3 +1,4 @@
+from marshmallow import Schema, fields
 from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.sql import func
@@ -6,6 +7,14 @@ from sqlalchemy.orm import relationship, backref
 from .meta import Base
 
 from .photo import Photo, PhotoAlbum
+
+
+class AlbumSchema(Schema):
+    id = fields.Int()
+    parent_id = fields.Int()
+    sort_order = fields.Int()
+    title = fields.Str()
+    slug = fields.Str()
 
 
 class Album(Base):

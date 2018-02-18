@@ -1,6 +1,6 @@
 from pyramid.view import view_config, view_defaults
 
-from ..models.album import Album
+from ..models.album import Album, AlbumSchema
 
 
 @view_defaults(route_name='api_albums', renderer='json')
@@ -12,14 +12,9 @@ class AlbumsView:
 
     def get(self):
         albums = Album().get_all(self.request.dbsession)
-        data = []
-        for album in albums:
-            data.append({
-                'id': album.id,
-                'title': album.title,
-                'slug': album.slug
-            })
-        return data
+        schema = AlbumSchema(many=True)
+        result = schema.dump(albums)
+        return result
 
     def post(self):
         parent_id = self.request.json_body['parent_id']
@@ -32,11 +27,8 @@ class AlbumsView:
                           title=title, slug=slug)
         self.request.dbsession.add(new_album)
 
-        return {
-            'id': new_album.id,
-            'title': new_album.title,
-            'slug': new_album.slug
-        }
+        schema = AlbumSchema()
+        return schema.dump(new_album)
 
 
 @view_defaults(route_name='api_album', renderer='json')
@@ -49,12 +41,8 @@ class AlbumView:
     def get(self):
         album = Album().get_album_by_slug(self.request.dbsession,
                                           self.request.matchdict['album'])
-
-        return {
-            'id': album.id,
-            'title': album.title,
-            'slug': album.slug
-        }
+        schema = AlbumSchema()
+        return schema.dump(album)
 
     def put(self):
         import pdb; pdb.set_trace()
@@ -73,11 +61,8 @@ class AlbumView:
 
         self.request.dbsession.add(album)
 
-        return {
-            'id': album.id,
-            'title': album.title,
-            'slug': album.slug
-        }
+        schema = AlbumSchema()
+        return schema.dump(album)
 
     def delete(self):
         album = Album().get_album_by_slug(self.request.dbsession,
