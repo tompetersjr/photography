@@ -32,6 +32,10 @@ class Album(Base):
         return '<Album: {}>'.format(self.title)
 
     @classmethod
+    def get_by_id(cls, session, album_id):
+        return session.query(Album).get(album_id)
+
+    @classmethod
     def get_all(cls, session):
         return session.query(Album).all()
 

@@ -7,6 +7,7 @@ from ..models.album import Album
 class AlbumsView:
     def __init__(self, request):
         # Used by the before_insert and before_update event listeners
+        request.dbsession.info['username'] = request.user.username
         self.request = request
 
     def get(self):
@@ -21,31 +22,69 @@ class AlbumsView:
         return data
 
     def post(self):
-        return {'get': 'test'}
+        parent_id = self.request.json_body['parent_id']
+        title = self.request.json_body['title']
+        slug = self.request.json_body['slug']
+
+        parent = Album().get_by_id(self.request.dbsession, parent_id)
+
+        new_album = Album(roles=parent.roles, parent=parent,
+                          title=title, slug=slug)
+        self.request.dbsession.add(new_album)
+
+        return {
+            'id': new_album.id,
+            'title': new_album.title,
+            'slug': new_album.slug
+        }
 
 
 @view_defaults(route_name='api_album', renderer='json')
 class AlbumView:
     def __init__(self, request):
         # Used by the before_insert and before_update event listeners
+        request.dbsession.info['username'] = request.user.username
         self.request = request
 
     def get(self):
-        albums = Album().get_all(self.request.dbsession)
-        data = []
-        for album in albums:
-            data.append({
-                'id': album.id,
-                'title': album.title,
-                'slug': album.slug
-            })
-        return data
+        album = Album().get_album_by_slug(self.request.dbsession,
+                                          self.request.matchdict['album'])
+
+        return {
+            'id': album.id,
+            'title': album.title,
+            'slug': album.slug
+        }
 
     def put(self):
-        return {'get': 'test'}
+        import pdb; pdb.set_trace()
+        album = Album().get_album_by_slug(self.request.dbsession,
+                                          self.request.matchdict['album'])
+
+        parent_id = self.request.json_body['parent_id']
+        title = self.request.json_body['title']
+        slug = self.request.json_body['slug']
+
+        parent = Album().get_by_id(self.request.dbsession, parent_id)
+
+        album.parent = parent
+        album.title = title
+        album.slug = slug
+
+        self.request.dbsession.add(album)
+
+        return {
+            'id': album.id,
+            'title': album.title,
+            'slug': album.slug
+        }
 
     def delete(self):
-        return {'get': 'test'}
+        album = Album().get_album_by_slug(self.request.dbsession,
+                                          self.request.matchdict['album'])
+
+        self.request.dbsession.delete(album)
+        return {'delete': 'success'}
 
 
 @view_defaults(renderer='json')

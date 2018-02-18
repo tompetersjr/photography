@@ -34,9 +34,9 @@ def includeme(config):
     config.add_route('api_albums', 'api/albums')
     config.add_view(AlbumsView, attr='get', request_method='GET')
     config.add_view(AlbumsView, attr='post', request_method='POST')
-    config.add_route('api_album', 'api/album')
+    config.add_route('api_album', 'api/album/{album}')
     config.add_view(AlbumView, attr='get', request_method='GET')
-    config.add_view(AlbumView, attr='put', request_method='Put')
+    config.add_view(AlbumView, attr='put', request_method='PUT')
     config.add_view(AlbumView, attr='delete', request_method='DELETE')
     config.add_route('api-photo-count-by-album', '/api/album-photo-counts')
 
