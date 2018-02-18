@@ -90,7 +90,6 @@ class AlbumView:
 @view_defaults(renderer='json')
 class AlbumGraphViews:
     def __init__(self, request):
-        # Used by the before_insert and before_update event listeners
         self.request = request
 
     @view_config(route_name='api-photo-count-by-album')
