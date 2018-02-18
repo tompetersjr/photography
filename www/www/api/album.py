@@ -1,3 +1,4 @@
+from json.decoder import JSONDecodeError
 from pyramid.view import view_config, view_defaults
 
 from ..models.album import Album, AlbumSchema
@@ -12,23 +13,59 @@ class AlbumsView:
 
     def get(self):
         albums = Album().get_all(self.request.dbsession)
-        schema = AlbumSchema(many=True)
+        schema = AlbumSchema(many=True,
+                             only=('id', 'parent_id',
+                                   'sort_order', 'title', 'slug')
+                             )
         result = schema.dump(albums)
-        return result
+        data = result.data
+        errors = result.errors
+
+        if errors:
+            status = 400
+        else:
+            status = 200
+
+        return {
+            'status': status,
+            'data': data,
+            'errors': errors
+        }
 
     def post(self):
-        parent_id = self.request.json_body['parent_id']
-        title = self.request.json_body['title']
-        slug = self.request.json_body['slug']
+        data = []
+        try:
+            data, errors = AlbumSchema().load(self.request.json_body)
+        except JSONDecodeError as e:
+            errors = {
+                'JSON Decode Error': e.msg
+            }
 
-        parent = Album().get_by_id(self.request.dbsession, parent_id)
+        if not errors:
+            parent = Album().get_by_id(self.request.dbsession, data['parent_id'])
 
-        new_album = Album(roles=parent.roles, parent=parent,
-                          title=title, slug=slug)
-        self.request.dbsession.add(new_album)
+            new_album = Album(roles=parent.roles, parent=parent,
+                              title=data['title'], slug=data['slug'])
+            self.request.dbsession.add(new_album)
 
-        schema = AlbumSchema()
-        return schema.dump(new_album)
+            schema = AlbumSchema(only=('id', 'parent_id',
+                                       'sort_order', 'title', 'slug'))
+            result = schema.dump(new_album)
+            data = result.data
+            errors = result.errors
+
+            if errors:
+                status = 400
+            else:
+                status = 200
+        else:
+            status = 400
+
+        return {
+            'status': status,
+            'data': data,
+            'errors': errors
+        }
 
 
 @view_defaults(route_name='api_album', renderer='json')
@@ -41,11 +78,24 @@ class AlbumView:
     def get(self):
         album = Album().get_album_by_slug(self.request.dbsession,
                                           self.request.matchdict['album'])
-        schema = AlbumSchema()
-        return schema.dump(album)
+        schema = AlbumSchema(only=('id', 'parent_id',
+                                   'sort_order', 'title', 'slug'))
+        result = schema.dump(album)
+        data = result.data
+        errors = result.errors
+
+        if errors:
+            status = 400
+        else:
+            status = 200
+
+        return {
+            'status': status,
+            'data': data,
+            'errors': errors
+        }
 
     def put(self):
-        import pdb; pdb.set_trace()
         album = Album().get_album_by_slug(self.request.dbsession,
                                           self.request.matchdict['album'])
 
@@ -61,15 +111,33 @@ class AlbumView:
 
         self.request.dbsession.add(album)
 
-        schema = AlbumSchema()
-        return schema.dump(album)
+        schema = AlbumSchema(only=('id', 'parent_id',
+                                   'sort_order', 'title', 'slug'))
+        result = schema.dump(album)
+        data = result.data
+        errors = result.errors
+
+        if errors:
+            status = 400
+        else:
+            status = 200
+
+        return {
+            'status': status,
+            'data': data,
+            'errors': errors
+        }
 
     def delete(self):
         album = Album().get_album_by_slug(self.request.dbsession,
                                           self.request.matchdict['album'])
 
         self.request.dbsession.delete(album)
-        return {'delete': 'success'}
+        return {
+            'status': 200,
+            'data': [],
+            'error': {}
+        }
 
 
 @view_defaults(renderer='json')

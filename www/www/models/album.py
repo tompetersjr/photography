@@ -11,6 +11,10 @@ from .photo import Photo, PhotoAlbum
 
 class AlbumSchema(Schema):
     id = fields.Int()
+    created_on = fields.DateTime()
+    create_by = fields.Str()
+    modified_on = fields.DateTime()
+    modified_by = fields.Str()
     parent_id = fields.Int()
     sort_order = fields.Int()
     title = fields.Str()
@@ -29,7 +33,7 @@ class Album(Base):
     parent_id = Column(Integer, ForeignKey("album.id"))
     sort_order = Column(Integer)
     title = Column(Text, nullable=False)
-    slug = Column(Text, nullable=False, unique=True)
+    slug = Column(Text, nullable=False)
     created_by_user = relationship('Profile', foreign_keys=[created_by])
     modified_by_user = relationship('Profile', foreign_keys=[modified_by])
     children = relationship('Album',
