@@ -11,6 +11,8 @@ from pyramid.view import (
     view_defaults,
 )
 
+from ..models.profile import Profile
+
 
 @view_defaults(route_name='login', renderer='login.jinja2')
 class AuthViews:
@@ -27,24 +29,14 @@ class AuthViews:
             username = self.request.POST.get('login', '')
             password = self.request.POST.get('password', '')
 
-            try:
-                # Use psycopg2 to validate our login
-                conn = psycopg2.connect(dbname='photos',
-                                        user=username,
-                                        password=password,
-                                        host='postgres',
-                                        port=5432)
+            username = Profile.authorize(username, password)
 
-                cur = conn.cursor()
-                cur.execute('SELECT * FROM profile WHERE username=%s', (username,))
-                profile = cur.fetchone()
-
-                username = profile[0]
+            if username:
                 headers = remember(self.request, username)
                 url = self.request.route_url('home')
                 return HTTPFound(location=url, headers=headers)
                 #return HTTPFound(location=next_url, headers=headers)
-            except psycopg2.OperationalError as e:
+            else:
                 message = 'Failed login'
 
         return dict(

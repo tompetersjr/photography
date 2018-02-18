@@ -1,13 +1,8 @@
-import datetime
-
+import pyramid.events as events
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid_jwt import create_jwt_authentication_policy
 from pyramid_multiauth import MultiAuthenticationPolicy
-from pyramid_multiauth import MultiAuthPolicySelected
-from pyramid.security import Authenticated
-from pyramid.security import Allow
-import pyramid.events as events
 
 from .models import Profile
 
@@ -32,12 +27,12 @@ def includeme(config):
     config.set_authorization_policy(ACLAuthorizationPolicy())
 
     policy_cookie = AuthTktAuthenticationPolicy(
-            settings['auth.secret'],
-            hashalg='sha512',
-        )
+        settings['auth.secret'],
+        hashalg='sha512',
+    )
     policy_jwt = create_jwt_authentication_policy(
-            config,
-            settings['auth.secret'])
+        config,
+        settings['auth.secret'])
 
     policies = [
         policy_cookie,
@@ -49,7 +44,6 @@ def includeme(config):
     def get_user(request):
         username = request.unauthenticated_userid
         if username is not None:
-            # We should be caching this.....
             user = request.cache.get('user_{}'.format(username))
             if user is None:
                 user = request.dbsession.query(Profile).get(username)

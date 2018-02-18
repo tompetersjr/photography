@@ -1,7 +1,6 @@
-import psycopg2
-
-from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.view import view_defaults
+
+from ..models.profile import Profile
 
 
 @view_defaults(route_name='api_login', renderer='json')
@@ -13,23 +12,8 @@ class AuthView:
     def post(self):
         username = self.request.json_body['login']
         password = self.request.json_body['password']
-        error = ''
 
-        try:
-            # Use psycopg2 to validate our login
-            conn = psycopg2.connect(dbname='photos',
-                                    user=username,
-                                    password=password,
-                                    host='postgres',
-                                    port=5432)
-
-            cur = conn.cursor()
-            cur.execute('SELECT * FROM profile WHERE username=%s', (username,))
-            profile = cur.fetchone()
-            username = profile[0]
-        except psycopg2.OperationalError as e:
-            error = 'Failed login'
-
+        username = Profile.authorize(username, password)
         if username:
             token = self.request.create_jwt_token(username)
             return {
@@ -39,5 +23,5 @@ class AuthView:
         else:
             return {
                 'success': False,
-                'result': error
+                'result': 'Not Authorized'
             }

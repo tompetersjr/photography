@@ -1,3 +1,5 @@
+import psycopg2
+
 from sqlalchemy import Column, Text, DateTime, ForeignKey, text
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -75,3 +77,20 @@ class Profile(Base):
             session.execute(sql)
 
         return
+
+    @classmethod
+    def authorize(cls, username, password):
+        try:
+            # Use psycopg2 to validate our login
+            conn = psycopg2.connect(dbname='photos',
+                                    user=username,
+                                    password=password,
+                                    host='postgres',
+                                    port=5432)
+
+            cur = conn.cursor()
+            cur.execute('SELECT * FROM profile WHERE username=%s', (username,))
+            profile = cur.fetchone()
+            return profile[0]
+        except psycopg2.OperationalError as e:
+            return None
