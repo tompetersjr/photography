@@ -1,5 +1,9 @@
+import transaction
+
 from json.decoder import JSONDecodeError
+from marshmallow import ValidationError
 from pyramid.view import view_config, view_defaults
+from sqlalchemy.exc import IntegrityError
 
 from ..models.album import Album, AlbumSchema
 
@@ -8,7 +12,8 @@ from ..models.album import Album, AlbumSchema
 class AlbumsView:
     def __init__(self, request):
         # Used by the before_insert and before_update event listeners
-        request.dbsession.info['username'] = request.user.username
+        if request.user:
+            request.dbsession.info['username'] = request.user.username
         self.request = request
 
     def get(self):
@@ -17,126 +22,136 @@ class AlbumsView:
                              only=('id', 'parent_id', 'cover_photo_id',
                                    'sort_order', 'title', 'slug')
                              )
-        result = schema.dump(albums)
-        data = result.data
-        errors = result.errors
-
-        if errors:
-            status = 400
-        else:
-            status = 200
-
-        return {
-            'status': status,
-            'data': data,
-            'errors': errors
-        }
+        data = schema.dump(albums)
+        return data
 
     def post(self):
-        data = []
         try:
-            data, errors = AlbumSchema().load(self.request.json_body)
+            data = AlbumSchema().load(self.request.json_body)
         except JSONDecodeError as e:
-            errors = {
-                'JSON Decode Error': e.msg
+            self.request.response.status = 400
+            return {
+                'JSON Error': [e.msg]
+            }
+        except ValidationError as err:
+            self.request.response.status = 400
+            return err.messages
+
+        parent = Album().get_by_id(self.request.dbsession, data['parent_id'])
+        if parent is None:
+            self.request.response.status = 400
+            return {
+                'error': ['Bad or Missing `parent_id` value']
             }
 
-        if not errors:
-            parent = Album().get_by_id(self.request.dbsession, data['parent_id'])
-
+        sp = transaction.savepoint()
+        try:
             new_album = Album(roles=parent.roles, parent=parent,
                               title=data['title'], slug=data['slug'])
             self.request.dbsession.add(new_album)
+            self.request.dbsession.flush()
+        except IntegrityError as e:
+            sp.rollback()
+            self.request.response.status = 400
+            return {
+                'error': ['Album slug must be unique within each album']
+            }
 
-            schema = AlbumSchema(only=('id', 'parent_id', 'cover_photo_id',
-                                       'sort_order', 'title', 'slug'))
-            result = schema.dump(new_album)
-            data = result.data
-            errors = result.errors
-
-            if errors:
-                status = 400
-            else:
-                status = 200
-        else:
-            status = 400
-
-        return {
-            'status': status,
-            'data': data,
-            'errors': errors
-        }
+        schema = AlbumSchema(only=('id', 'parent_id', 'cover_photo_id',
+                                   'sort_order', 'title', 'slug'))
+        data = schema.dump(new_album)
+        self.request.response.status = 201
+        return data
 
 
 @view_defaults(route_name='api_album', renderer='json')
 class AlbumView:
     def __init__(self, request):
         # Used by the before_insert and before_update event listeners
-        request.dbsession.info['username'] = request.user.username
+        if request.user:
+            request.dbsession.info['username'] = request.user.username
         self.request = request
 
+    def _validate_album_id(self, album_id):
+        if not album_id.isdigit():
+            self.request.response.status = 400
+            return {
+                'error': ['Album `id` must be a number']
+            }
+
+        album = Album().get_by_id(self.request.dbsession,
+                                  album_id)
+
+        if album is None:
+            self.request.response.status = 400
+            return {
+                'error': ['Album does not exist']
+            }
+
+        return album
+
     def get(self):
-        album = Album().get_album_by_slug(self.request.dbsession,
-                                          self.request.matchdict['album'])
+        album = self._validate_album_id(self.request.matchdict.get('id'))
+
         schema = AlbumSchema(only=('id', 'parent_id', 'cover_photo_id',
                                    'sort_order', 'title', 'slug'))
-        result = schema.dump(album)
-        data = result.data
-        errors = result.errors
-
-        if errors:
-            status = 400
-        else:
-            status = 200
-
-        return {
-            'status': status,
-            'data': data,
-            'errors': errors
-        }
+        data = schema.dump(album)
+        return data
 
     def put(self):
-        album = Album().get_album_by_slug(self.request.dbsession,
-                                          self.request.matchdict['album'])
+        album = self._validate_album_id(self.request.matchdict.get('id'))
 
-        parent_id = self.request.json_body['parent_id']
-        title = self.request.json_body['title']
-        slug = self.request.json_body['slug']
+        keys = ['parent_id', 'title', 'slug']
+        for key in keys:
+            if key not in self.request.json_body:
+                self.request.response.status = 400
+                return {
+                    'error': ['No `{}` specified'.format(key)]
+                }
+
+        parent_id = self.request.json_body.get('parent_id')
+        title = self.request.json_body.get('title')
+        slug = self.request.json_body.get('slug')
 
         parent = Album().get_by_id(self.request.dbsession, parent_id)
+        if parent is None:
+            self.request.response.status = 400
+            return {
+                'error': ['Bad `parent_id` value']
+            }
 
         album.parent = parent
         album.title = title
         album.slug = slug
 
-        self.request.dbsession.add(album)
+        sp = transaction.savepoint()
+        try:
+            self.request.dbsession.add(album)
+            self.request.dbsession.flush()
+        except IntegrityError as e:
+            sp.rollback()
+            self.request.response.status = 400
+            return {
+                'error': ['Album slug must be unique within each album']
+            }
 
         schema = AlbumSchema(only=('id', 'parent_id', 'cover_photo_id',
                                    'sort_order', 'title', 'slug'))
-        result = schema.dump(album)
-        data = result.data
-        errors = result.errors
-
-        if errors:
-            status = 400
-        else:
-            status = 200
-
-        return {
-            'status': status,
-            'data': data,
-            'errors': errors
-        }
+        data = schema.dump(album)
+        return data
 
     def delete(self):
-        album = Album().get_album_by_slug(self.request.dbsession,
-                                          self.request.matchdict['album'])
+        album = self._validate_album_id(self.request.matchdict.get('id'))
+
+        if album is None:
+            self.request.response.status = 400
+            return {
+                'error': ['Album does not exist']
+            }
 
         self.request.dbsession.delete(album)
         return {
-            'status': 200,
-            'data': [],
-            'error': {}
+            'success': 'Deleted Album {}'.format(self.request.matchdict['id'])
         }
 
 

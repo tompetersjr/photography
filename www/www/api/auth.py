@@ -17,11 +17,10 @@ class AuthView:
         if username:
             token = self.request.create_jwt_token(username)
             return {
-                'success': True,
                 'token': token
             }
         else:
+            self.request.response.status = 403
             return {
-                'success': False,
-                'result': 'Not Authorized'
+                'error': ['Not Authorized']
             }

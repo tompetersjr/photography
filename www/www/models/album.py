@@ -2,6 +2,7 @@ from marshmallow import Schema, fields
 from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.sql import func
+from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.orm import relationship, backref
 
 from .meta import Base
@@ -42,6 +43,10 @@ class Album(Base):
                             backref=backref('parent', remote_side=[id]))
     photos = relationship('Photo', secondary='photo_album',
                           order_by='Photo.created_at')
+
+    __table_args__ = (
+        UniqueConstraint('parent_id', 'slug', name='uc_parent_id_slug'),
+    )
 
     def __repr__(self):
         return '<Album: {}>'.format(self.title)

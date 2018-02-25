@@ -32,7 +32,8 @@ def includeme(config):
     )
     policy_jwt = create_jwt_authentication_policy(
         config,
-        settings['auth.secret'])
+        settings['auth.secret'],
+        auth_type='Bearer')
 
     policies = [
         policy_cookie,
