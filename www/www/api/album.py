@@ -11,7 +11,6 @@ from ..models.album import Album, AlbumSchema
 @view_defaults(route_name='api_albums', renderer='json')
 class AlbumsView:
     def __init__(self, request):
-        # Used by the before_insert and before_update event listeners
         if request.user:
             request.dbsession.info['username'] = request.user.username
         self.request = request
@@ -67,7 +66,6 @@ class AlbumsView:
 @view_defaults(route_name='api_album', renderer='json')
 class AlbumView:
     def __init__(self, request):
-        # Used by the before_insert and before_update event listeners
         if request.user:
             request.dbsession.info['username'] = request.user.username
         self.request = request
