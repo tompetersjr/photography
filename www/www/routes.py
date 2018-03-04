@@ -9,6 +9,7 @@ from pyramid.view import forbidden_view_config
 
 from .api.album import AlbumsView, AlbumView
 from .api.auth import AuthView
+from .api.photo import PhotosView, PhotoView
 
 
 def includeme(config):
@@ -31,6 +32,7 @@ def includeme(config):
     # API
     config.add_route('api_login', 'api/login')
     config.add_view(AuthView, attr='post', request_method='POST')
+
     config.add_route('api_albums', 'api/albums')
     config.add_view(AlbumsView, attr='get', request_method='GET')
     config.add_view(AlbumsView, attr='post', request_method='POST')
@@ -39,6 +41,14 @@ def includeme(config):
     config.add_view(AlbumView, attr='put', request_method='PUT')
     config.add_view(AlbumView, attr='delete', request_method='DELETE')
     config.add_route('api-photo-count-by-album', '/api/album-photo-counts')
+
+    config.add_route('api_photos', 'api/photos/{id}')
+    config.add_view(PhotosView, attr='get', request_method='GET')
+    config.add_view(PhotosView, attr='post', request_method='POST')
+    config.add_route('api_photo', 'api/photo/{id}')
+    config.add_view(PhotoView, attr='get', request_method='GET')
+    config.add_view(PhotoView, attr='put', request_method='PUT')
+    config.add_view(PhotoView, attr='delete', request_method='DELETE')
 
 
 @forbidden_view_config()

@@ -1,4 +1,3 @@
-from marshmallow import Schema, fields
 from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.sql import func
@@ -6,21 +5,6 @@ from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.orm import relationship, backref
 
 from .meta import Base
-
-from .photo import Photo, PhotoAlbum
-
-
-class AlbumSchema(Schema):
-    id = fields.Int()
-    created_on = fields.DateTime()
-    create_by = fields.Str()
-    modified_on = fields.DateTime()
-    modified_by = fields.Str()
-    parent_id = fields.Int()
-    cover_photo_id = fields.Int()
-    sort_order = fields.Int()
-    title = fields.Str()
-    slug = fields.Str()
 
 
 class Album(Base):
@@ -91,6 +75,8 @@ class Album(Base):
 
     @classmethod
     def get_photo_counts_by_album(cls, session, top_num=5):
+        from .photo import Photo, PhotoAlbum
+
         if top_num > 5:
             raise ValueError('You can only return up to 5 results.')
 

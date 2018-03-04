@@ -5,7 +5,8 @@ from marshmallow import ValidationError
 from pyramid.view import view_config, view_defaults
 from sqlalchemy.exc import IntegrityError
 
-from ..models.album import Album, AlbumSchema
+from ..models.album import Album
+from ..schemas import AlbumSchema
 
 
 @view_defaults(route_name='api_albums', renderer='json')
@@ -49,7 +50,7 @@ class AlbumsView:
                               title=data['title'], slug=data['slug'])
             self.request.dbsession.add(new_album)
             self.request.dbsession.flush()
-        except IntegrityError as e:
+        except IntegrityError:
             sp.rollback()
             self.request.response.status = 400
             return {
@@ -93,13 +94,10 @@ class AlbumView:
 
         schema = AlbumSchema(only=('id', 'parent_id', 'cover_photo_id',
                                    'sort_order', 'title', 'slug'))
-        data = schema.dump(album)
-        return data
+        return schema.dump(album)
 
     def put(self):
-        album = self._validate_album_id(self.request.matchdict.get('id'))
-
-        keys = ['parent_id', 'title', 'slug']
+        keys = ['id', 'parent_id', 'title', 'slug']
         for key in keys:
             if key not in self.request.json_body:
                 self.request.response.status = 400
@@ -107,9 +105,12 @@ class AlbumView:
                     'error': ['No `{}` specified'.format(key)]
                 }
 
+        album_id = self.request.matchdict.get('id')
         parent_id = self.request.json_body.get('parent_id')
         title = self.request.json_body.get('title')
         slug = self.request.json_body.get('slug')
+
+        album = self._validate_album_id(album_id)
 
         parent = Album().get_by_id(self.request.dbsession, parent_id)
         if parent is None:
@@ -126,7 +127,7 @@ class AlbumView:
         try:
             self.request.dbsession.add(album)
             self.request.dbsession.flush()
-        except IntegrityError as e:
+        except IntegrityError:
             sp.rollback()
             self.request.response.status = 400
             return {
@@ -135,8 +136,7 @@ class AlbumView:
 
         schema = AlbumSchema(only=('id', 'parent_id', 'cover_photo_id',
                                    'sort_order', 'title', 'slug'))
-        data = schema.dump(album)
-        return data
+        return schema.dump(album)
 
     def delete(self):
         album = self._validate_album_id(self.request.matchdict.get('id'))

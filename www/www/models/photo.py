@@ -20,6 +20,19 @@ class PhotoAlbum(Base):
         return '<PhotoAlbum: {} - {}>'.format(self.photo.title,
                                               self.album.album)
 
+    @classmethod
+    def get_by_ids(cls, session, photo_id, album_id):
+        return session.query(PhotoAlbum).\
+            filter_by(photo_id=photo_id,
+                      album_id=album_id).\
+            all()
+
+    @classmethod
+    def get_by_photo_albums(cls, session, photo_id):
+        return session.query(PhotoAlbum).\
+            filter_by(photo_id=photo_id).\
+            all()
+
 
 class PhotoTag(Base):
     __tablename__ = 'photo_tag'
@@ -155,6 +168,18 @@ class Photo(Base):
         return '<Photo: {}>'.format(self.title)
 
     @classmethod
+    def get_by_id(cls, session, photo_id):
+        return session.query(Photo).get(photo_id)
+
+    @classmethod
+    def get_all_in_album(cls, session, album_id):
+        return session.query(Photo)\
+            .join(PhotoAlbum)\
+            .filter(PhotoAlbum.album_id == album_id)\
+            .all()
+
+    @classmethod
     def count(cls, session):
         count = session.query(Photo).count()
         return count
+
