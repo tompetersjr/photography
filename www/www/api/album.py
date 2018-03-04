@@ -22,8 +22,7 @@ class AlbumsView:
                              only=('id', 'parent_id', 'cover_photo_id',
                                    'sort_order', 'title', 'slug')
                              )
-        data = schema.dump(albums)
-        return data
+        return schema.dump(albums)
 
     def post(self):
         try:
@@ -59,9 +58,8 @@ class AlbumsView:
 
         schema = AlbumSchema(only=('id', 'parent_id', 'cover_photo_id',
                                    'sort_order', 'title', 'slug'))
-        data = schema.dump(new_album)
         self.request.response.status = 201
-        return data
+        return schema.dump(new_album)
 
 
 @view_defaults(route_name='api_album', renderer='json')

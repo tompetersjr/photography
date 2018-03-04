@@ -32,8 +32,7 @@ class PhotosView:
                                    'focal_length', 'exposure',
                                    'f_stop', 'height', 'width')
                              )
-        data = schema.dump(photos)
-        return data
+        return schema.dump(photos)
 
     def post(self):
         try:
@@ -77,11 +76,10 @@ class PhotosView:
 
         schema = PhotoSchema(only=('id', 'title', 'slug',
                                    'caption', 'original_filename'))
-        data = schema.dump(new_photo)
         self.request.response.status = 201
         self.request.response.headers['location'] \
             = 'api/photo/upload?photo_id={}'.format(new_photo.id)
-        return data
+        return schema.dump(new_photo)
 
 
 @view_defaults(route_name='api_photo', renderer='json')
